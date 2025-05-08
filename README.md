@@ -3,7 +3,8 @@
 ## Prerequisites
 
 1. **Powershell**
-2. **Python**
+2. **Python** ([Download Python](https://www.python.org/))
+3. **Pinokio** ([Install Pinokio](https://program.pinokio.computer/#/?id=install))
 
 ## Setup Instructions
 
@@ -20,8 +21,16 @@
 3. Run the following commands in Powershell (ensure you are in `C:\pinokio`):
 
    ```powershell
+   # Step 1: Set the execution policy to unrestricted for the current user.
    Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted
+
+   # Step 2: Clone the repository from GitHub to your local machine.
+   git clone https://github.com/juanricardo-cortes/notebook-assistant.git
+
+   # Step 3: Activate the virtual environment for the Notebook Assistant application.
    .\api\notebook-assistant\app\env\Scripts\activate
+
+   # Step 4: Verify that the Notebook Assistant environment is active.
    which python
    ```
 

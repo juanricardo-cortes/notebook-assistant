@@ -1,0 +1,132 @@
+import time
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.action_chains import ActionChains
+from webdriver_manager.chrome import ChromeDriverManager
+
+class NotebookHelper:
+    def __init__(self, headless=False):
+        # Setup Chrome options
+        options = webdriver.ChromeOptions()
+        if headless:
+            options.add_argument("--headless")
+        options.add_argument("--mute-audio")
+        options.add_argument("--no-sandbox")
+        options.add_argument("--disable-dev-shm-usage")
+
+        self.driver = webdriver.Chrome(
+            service=Service(ChromeDriverManager().install()),
+            options=options
+        )
+        
+        self.your_notebook_url = "https://notebooklm.google.com/"
+
+    def open_notebook(self):
+        self.driver.get(self.your_notebook_url)
+        print(f"Opening Notebook URL: {self.your_notebook_url}")
+        time.sleep(5)  # Let the page load
+
+    def login(self, email, password):
+        try:
+            # Locate the email/username field and enter the email
+            email_field = self.driver.find_element(By.ID, "identifierId")  # Replace with the actual ID or selector
+            email_field.send_keys(email)
+            self.driver.find_element(By.ID, "identifierNext").click()  # Replace with the actual ID or selector
+            time.sleep(2)  # Wait for the password field to load
+
+            # Locate the password field and enter the password
+            password_field = self.driver.find_element(By.NAME, "Passwd")  # Replace with the actual name or selector
+            password_field.send_keys(password)
+            self.driver.find_element(By.ID, "passwordNext").click()  # Replace with the actual ID or selector
+            time.sleep(5)  # Wait for the login process to complete
+
+            # Click "Do this later" if the prompt appears
+            try:
+                do_this_later_button = self.driver.find_element(By.LINK_TEXT, "Do this later")  # Replace with the actual text or selector
+                do_this_later_button.click()
+                print("Clicked 'Do this later'.")
+            except Exception as e:
+                print("'Do this later' button not found or not needed:", e)
+
+            print("Login successful!")
+        except Exception as e:
+            print(f"Login failed: {e}")
+
+    def click_create_new_notebook(self):
+        time.sleep(5)
+        try:
+            menu_button = self.driver.find_element(By.CLASS_NAME, "create-new-button-homepage-plus-update")
+            menu_button.click()
+            print("Clicked on the 'Create New Notebook' button.")
+            return True
+        except Exception as e:
+        # If both buttons are not found, print the error and return False
+            print(f"Could not find button: {e}")
+            return False
+        
+    def click_youtube_button(self):
+        time.sleep(3)
+        try:
+            level_one = self.driver.find_elements(By.CLASS_NAME, "mdc-evolution-chip--with-primary-icon")
+            for element in level_one:
+                level_two = element.find_element(By.CLASS_NAME, "mdc-evolution-chip__cell")
+                level_three = level_two.find_element(By.CLASS_NAME, "mdc-evolution-chip__action")
+                level_four = level_three.find_element(By.CLASS_NAME, "mat-mdc-chip-action-label")
+                level_five = level_four.find_element(By.TAG_NAME, "span")
+                print(f"Found button: {level_five.text}")
+                if level_five is not None:
+                    if level_five.text == "YouTube":
+                        print("Found the YouTube button.")
+                        break
+
+            level_three.click()
+            print("Clicked on the 'YouTube' button.")
+            return True
+        except Exception as e:
+            print(f"Could not find YouTube button: {e}")
+            return False
+
+    def upload_youtube_source(self, link):
+        time.sleep(3)
+        try:
+            # Locate the YouTube link input field and enter the link
+            youtube_link_field = self.driver.find_element(By.CLASS_NAME, "mat-mdc-input-element")  # Replace with the actual class or selector
+            youtube_link_field.send_keys(link)
+            print(f"Entered YouTube link: {link}")
+
+            time.sleep(2)  # Wait for the link to be processed
+            submit_buttons = self.driver.find_elements(By.CLASS_NAME, "mat-mdc-unelevated-button")
+            print(f"Found {len(submit_buttons)} submit buttons.")
+            for submit_button in submit_buttons:
+                validate_button = submit_button.find_element(By.CLASS_NAME, "mdc-button__label")
+                if validate_button is not None:
+                    if validate_button.text == "Insert":
+                        submit_button.click()
+            return True
+        except Exception as e:
+            print(f"Could not enter YouTube link: {e}")
+            return False
+        
+    def generate_audio_podcast(self):
+        time.sleep(3)
+        try:
+            # Locate the "Generate Audio Podcast" button and click it
+            while True:
+                try:
+                    generate_button = self.driver.find_element(By.CLASS_NAME, "generate-button")  # Replace with the actual class or selector
+                    if generate_button.is_enabled():
+                        generate_button.click()
+                        print("Clicked on the 'Generate Audio Podcast' button.")
+                        break
+                except Exception as e:
+                    print(f"Could not find 'Generate Audio Podcast' button: {e}")
+                    time.sleep(1)
+            return True
+        except Exception as e:
+            print(f"Could not find 'Generate Audio Podcast' button: {e}")
+            return False
+
+    def wait(self, seconds):
+        time.sleep(seconds)
+    

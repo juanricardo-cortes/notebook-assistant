@@ -1,0 +1,41 @@
+node_modules
+.DS_Store
+
+# Python environment files
+env/
+env/Lib/site-packages/
+*.pyc
+__pycache__/
+
+# Log files
+logs/
+*.log
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+
+# Cache directories
+cache/
+
+# System files
+Thumbs.db
+.vscode/
+
+# Build artifacts
+dist/
+build/
+
+# config files
+app/config
+
+app/.env
+
+app/output/instagram
+app/output/twitter
+app/output/facebook
+app/output/linkedin
+app/output/instagram
+app/output/youtube
+app/output/emails

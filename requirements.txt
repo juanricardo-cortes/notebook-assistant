@@ -1,0 +1,17 @@
+transformers
+accelerate
+diffusers
+gradio
+devicetorch
+openai
+beautifulsoup4 
+selenium 
+requests 
+webdriver-manager
+torch
+youtube-transcript-api
+google-api-python-client
+playwright
+linkedin-scraper
+google-cloud-storage
+facebook-sdk

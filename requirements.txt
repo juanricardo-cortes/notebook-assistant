@@ -15,3 +15,4 @@ playwright
 linkedin-scraper
 google-cloud-storage
 facebook-sdk
+pyautogui

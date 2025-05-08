@@ -1,4 +1,6 @@
+import os
 import time
+import pyautogui
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.service import Service
@@ -56,13 +58,73 @@ class NotebookHelper:
     def click_create_new_notebook(self):
         time.sleep(5)
         try:
-            menu_button = self.driver.find_element(By.CLASS_NAME, "create-new-button-homepage-plus-update")
+            menu_button = self.driver.find_element(By.CLASS_NAME, "create-new-button")
             menu_button.click()
             print("Clicked on the 'Create New Notebook' button.")
             return True
         except Exception as e:
         # If both buttons are not found, print the error and return False
             print(f"Could not find button: {e}")
+            return False
+        
+    def upload_files(self, data_array):
+        print(f"Uploading files: {data_array}")
+        time.sleep(3)
+        try:
+            input_file_button = self.driver.find_element(By.CSS_SELECTOR, "button[aria-label='Upload sources from your computer']")
+            if input_file_button is not None:
+                print("Found the input file button.")
+                input_file_button.click()
+                time.sleep(2)
+                file_path = os.path.abspath(data_array[0])  # Get the absolute path of the file
+                pyautogui.write(file_path)
+                pyautogui.press('enter')
+                time.sleep(20) # Wait for upload
+
+                add_file_button = self.driver.find_element(By.CSS_SELECTOR, "button[aria-label='Add source']")
+                for data in data_array[1:]:
+                    if add_file_button is not None:
+                        print("Found the add file button.")
+                        add_file_button.click()
+                        time.sleep(2)
+                        input_file_button = self.driver.find_element(By.CSS_SELECTOR, "button[aria-label='Upload sources from your computer']")
+                        input_file_button.click()
+                        time.sleep(2)
+                        file_path = os.path.abspath(data)
+                        pyautogui.write(file_path)
+                        pyautogui.press('enter')
+                        time.sleep(20)
+                    else:
+                        print("Add file button not found.")
+                        return False
+                return True
+            else:
+                print("Input file button not found.")
+                return False
+        except Exception as e:
+            print(f"Could not find input file button: {e}")
+            return False
+        
+    def click_pasted_text_button(self):
+        time.sleep(3)
+        try:
+            level_one = self.driver.find_elements(By.CLASS_NAME, "mdc-evolution-chip--with-primary-icon")
+            for element in level_one:
+                level_two = element.find_element(By.CLASS_NAME, "mdc-evolution-chip__cell")
+                level_three = level_two.find_element(By.CLASS_NAME, "mdc-evolution-chip__action")
+                level_four = level_three.find_element(By.CLASS_NAME, "mat-mdc-chip-action-label")
+                level_five = level_four.find_element(By.TAG_NAME, "span")
+                print(f"Found button: {level_five.text}")
+                if level_five is not None:
+                    if level_five.text == "Copied text":
+                        print("Found the Text button.")
+                        break
+
+            level_three.click()
+            print("Clicked on the 'YouTube' button.")
+            return True
+        except Exception as e:
+            print(f"Could not find YouTube button: {e}")
             return False
         
     def click_youtube_button(self):
@@ -127,6 +189,28 @@ class NotebookHelper:
             print(f"Could not find 'Generate Audio Podcast' button: {e}")
             return False
 
+    def download_file(self):
+        time.sleep(30)
+        try:
+            # Locate the download button and click it
+            while True: 
+                try:
+                    expand_button = self.driver.find_element(By.CSS_SELECTOR, "button[aria-label='See more options for audio player']")  # Replace with the actual class or selector
+                    if expand_button is not None:
+                        break
+                    else: 
+                        continue
+                except Exception as e:
+                    continue
+            time.sleep(2)
+            expand_button.click()
+            time.sleep(3)
+            download_button = self.driver.find_element(By.CSS_SELECTOR, "a[role='menuItem']") 
+            download_button.click()
+            print("Clicked on the 'Download' button.")
+            return True
+        except Exception as e:
+            print(f"Could not find 'Download' button: {e}")
+            return False
     def wait(self, seconds):
         time.sleep(seconds)
-    

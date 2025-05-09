@@ -1,4 +1,4 @@
-from google.oauth2.service_account import Credentials
+from google.oauth2.service_account import Credentials # type: ignore
 
 class CredentialsProvider:
     def __init__(self, config):

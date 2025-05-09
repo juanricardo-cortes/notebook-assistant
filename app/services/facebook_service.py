@@ -1,5 +1,5 @@
 from abstractions.base_scraper import SocialScraper
-from facebook import GraphAPI
+from facebook import GraphAPI # type: ignore
 
 class FacebookService(SocialScraper):
     def __init__(self, access_token, output_folder='output/facebook'):

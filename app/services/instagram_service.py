@@ -23,7 +23,7 @@ class InstagramScraper(SocialScraper):
             print(f"Failed to close popup by clicking outside: {e}")
 
     def scrape_profile(self, profile_url: str) -> list:
-        from playwright.sync_api import sync_playwright
+        from playwright.sync_api import sync_playwright # type: ignore
 
         posts = []
         yesterday = datetime.date.today() - datetime.timedelta(days=1)

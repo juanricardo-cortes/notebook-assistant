@@ -1,5 +1,5 @@
-from googleapiclient.discovery import build
-from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound
+from googleapiclient.discovery import build # type: ignore
+from youtube_transcript_api import YouTubeTranscriptApi, TranscriptsDisabled, NoTranscriptFound # type: ignore
 import os
 import datetime
 import re

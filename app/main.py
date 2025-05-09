@@ -31,7 +31,7 @@ def main(args=None):
         print(f"Received arguments: {args}")
 
         # start_proxy_rotation()        
-        # start_monitoring()
+        start_monitoring()
         # start_email_provider()
         start_google_drive()
 
@@ -41,8 +41,8 @@ def start_monitoring():
         # "C:/pinokio/api/notebook-assistant/app/output/youtube/20250509/youtube__AllAboutAI_20250509.txt",
         # "C:/pinokio/api/notebook-assistant/app/output/youtube/20250509/youtube__DavidOndrej_20250509.txt"
     ]
-    # all_files.extend(monitor_youtube_channels())
-    # all_files.extend(monitor_twitter_profiles())
+    all_files.extend(monitor_youtube_channels())
+    all_files.extend(monitor_twitter_profiles())
     # all_files.extend(monitor_linkedin_profiles())
     # all_files.extend(monitor_instagram_profiles())
     # all_files.extend(monitor_facebook_groups())

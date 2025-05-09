@@ -11,6 +11,12 @@ from services.facebook_service import FacebookService
 from monitors.social_monitor import SocialMonitor
 from core.proxy_manager import FreeProxyManager
 
+from utils.drive_manager import GoogleDriveUploader
+from utils.gmail_manager import GmailService
+from utils.credentials_provider import CredentialsProvider
+from utils.email_provider import EmailProvider
+from features.notebook_default import NotebookDefault
+
 # Load configuration from the config file
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "config.json")
 with open(CONFIG_PATH, "r") as config_file:
@@ -25,8 +31,9 @@ def main(args=None):
         print(f"Received arguments: {args}")
 
         # start_proxy_rotation()        
-        start_monitoring()
+        # start_monitoring()
         # start_email_provider()
+        start_google_drive()
 
 def start_monitoring():
     print("Starting monitoring...")
@@ -85,7 +92,6 @@ def start_proxy_rotation():
     print(f"Random working proxy: {working_proxy}")
 
 def start_email_provider():
-    from utils.email_provider import EmailProvider
     mail_api = EmailProvider()
     for _ in range(3):
         email, password = mail_api.create_email_with_credentials()
@@ -94,9 +100,22 @@ def start_email_provider():
         time.sleep(2)
 
 def start_notebook_assistant(processed_data):
-    from features.notebook_default import NotebookDefault
     notebook_assistant = NotebookDefault()
     notebook_assistant.generate_audio_podcast_from_profiles(processed_data)
+
+def start_google_drive():
+    credentials_provider = CredentialsProvider(CONFIG)
+    credentials = credentials_provider.get_credentials()
+    uploader = GoogleDriveUploader(credentials=credentials)
+    uploader.authenticate()
+    file_metadata = uploader.upload_file(emails_to_share=CONFIG["emails_to_share"])
+
+    gmail_service = GmailService(credentials=credentials)
+    gmail_service.send_email(
+        to=CONFIG["support_email"],
+        subject='File Uploaded',
+        body=f"Daily podcast update has been uploaded to Google Drive. Link: {file_metadata['webViewLink']}"
+    )
 
 if __name__ == "__main__":
     main(sys.argv[1:])

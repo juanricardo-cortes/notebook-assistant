@@ -5,8 +5,8 @@ import urllib.parse
 
 
 class NotebookDefault:
-    def __init__(self):
-        self.helper = NotebookHelper()
+    def __init__(self, driver):
+        self.helper = NotebookHelper(driver=driver)
 
     def generate_audio_podcast_from_profiles(self, data):
         CONFIG_PATH = os.path.join(os.path.dirname(__file__), "..", "config", "config.json")
@@ -16,7 +16,10 @@ class NotebookDefault:
         self.helper.open_notebook()
         self.helper.login(CONFIG["notebook_email"], CONFIG["notebook_password"])
 
+        # self.helper.test_notebook()
+        # self.helper.download_file()
         # Click to create a new notebook
+        
         if self.helper.click_create_new_notebook():
             print("Successfully clicked to create a new notebook.")
             if self.helper.upload_files(data):
@@ -33,10 +36,6 @@ class NotebookDefault:
                 print("Failed to click the input button.")
         else:
             print("Failed to click to create a new notebook.")
-
-        self.helper.wait(10000)
-
-        return self.default
 
 
     def generate_one_youtube_video_podcast(self, args):

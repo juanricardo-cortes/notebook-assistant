@@ -31,18 +31,22 @@ def main(args=None):
         print(f"Received arguments: {args}")
 
         # start_proxy_rotation()        
-        start_monitoring()
         # start_email_provider()
+
+        start_monitoring()
         start_google_drive()
 
 def start_monitoring():
     print("Starting monitoring...")
     all_files = [
-        # "C:/pinokio/api/notebook-assistant/app/output/youtube/20250509/youtube__AllAboutAI_20250509.txt",
-        # "C:/pinokio/api/notebook-assistant/app/output/youtube/20250509/youtube__DavidOndrej_20250509.txt"
+        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_StanfordHAI_20250509.txt",
+        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_sentdex_20250509.txt",
+        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_openai_20250509.txt",
+        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_GoogleAI_20250509.txt",
+        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_elonmusk_20250509.txt"
     ]
-    all_files.extend(monitor_youtube_channels())
-    all_files.extend(monitor_twitter_profiles())
+    # all_files.extend(monitor_youtube_channels())
+    # all_files.extend(monitor_twitter_profiles())
     # all_files.extend(monitor_linkedin_profiles())
     # all_files.extend(monitor_instagram_profiles())
     # all_files.extend(monitor_facebook_groups())
@@ -100,10 +104,12 @@ def start_email_provider():
         time.sleep(2)
 
 def start_notebook_assistant(processed_data):
-    notebook_assistant = NotebookDefault()
+    driver = AntiDetectDriver().get_driver()
+    notebook_assistant = NotebookDefault(driver=driver)
     notebook_assistant.generate_audio_podcast_from_profiles(processed_data)
 
 def start_google_drive():
+    time.sleep(10)  # Wait for the file to be ready
     credentials_provider = CredentialsProvider(CONFIG)
     credentials = credentials_provider.get_credentials()
     uploader = GoogleDriveUploader(credentials=credentials)

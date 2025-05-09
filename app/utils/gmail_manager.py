@@ -59,6 +59,7 @@ class GmailService:
             ).decode("utf-8")
         }
         self.service.users().messages().send(userId="me", body=message).execute()
+        print(f"Email sent to {to} with subject: {subject}")
 
     def save_draft(self, to, subject, body):
         """

@@ -8,20 +8,22 @@ from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager # type: ignore
 
 class NotebookHelper:
-    def __init__(self, headless=False):
+    def __init__(self, driver, headless=False):
         # Setup Chrome options
-        options = webdriver.ChromeOptions()
-        if headless:
-            options.add_argument("--headless")
-        options.add_argument("--mute-audio")
-        options.add_argument("--no-sandbox")
-        options.add_argument("--disable-dev-shm-usage")
+        # options = webdriver.ChromeOptions()
+        # if headless:
+        #     options.add_argument("--headless")
+        # options.add_argument("--mute-audio")
+        # options.add_argument("--no-sandbox")
+        # options.add_argument("--disable-dev-shm-usage")
+        # options.add_argument("--start-maximized")
 
-        self.driver = webdriver.Chrome(
-            service=Service(ChromeDriverManager().install()),
-            options=options
-        )
-        
+        # self.driver = webdriver.Chrome(
+        #     service=Service(ChromeDriverManager().install()),
+        #     options=options
+        # )
+
+        self.driver = driver
         self.your_notebook_url = "https://notebooklm.google.com/"
 
     def open_notebook(self):
@@ -205,12 +207,22 @@ class NotebookHelper:
             time.sleep(2)
             expand_button.click()
             time.sleep(3)
-            download_button = self.driver.find_element(By.CSS_SELECTOR, "a[role='menuItem']") 
+            download_button = self.driver.find_element(By.CSS_SELECTOR, "a.mat-mdc-menu-item") 
+            time.sleep(5)
             download_button.click()
             print("Clicked on the 'Download' button.")
             return True
         except Exception as e:
             print(f"Could not find 'Download' button: {e}")
             return False
+    
+    def test_notebook(self):
+        self.driver.get("https://notebooklm.google.com/notebook/674d14b6-e291-42f9-8bb4-ccdefd762cea")
+        print(f"Opening Notebook URL: {self.your_notebook_url}")
+        time.sleep(15)  # Let the page load
+        expand_button = self.driver.find_element(By.CSS_SELECTOR, "button[aria-label='Load the audio overview']")
+        expand_button.click()
+        time.sleep(5)
+    
     def wait(self, seconds):
         time.sleep(seconds)

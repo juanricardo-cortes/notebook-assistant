@@ -26,3 +26,7 @@ class SocialScraper(ABC):
             json.dump(content, f, indent=2)
 
         return filename
+
+    def check_content(self, content: list) -> bool:
+        """Check if the content is empty or not."""
+        pass

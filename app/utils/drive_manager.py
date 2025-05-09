@@ -94,7 +94,7 @@ class GoogleDriveUploader:
             raise Exception("No files found in the Downloads folder.")
 
         # Step 4: Upload file to the dated folder
-        file_metadata = {'name': os.path.basename(file_path), 'parents': [dated_folder_id]}
+        file_metadata = {'name': f"{date_today}_AI_UPDATES", 'parents': [dated_folder_id]}
         media = MediaFileUpload(file_path, resumable=True)
         file = self.drive_service.files().create(
             body=file_metadata, media_body=media, fields='id,webViewLink'

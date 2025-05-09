@@ -26,6 +26,7 @@ class InstagramScraper(SocialScraper):
         from playwright.sync_api import sync_playwright # type: ignore
 
         posts = []
+        
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
 
         with sync_playwright() as p:

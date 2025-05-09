@@ -28,7 +28,7 @@ dist/
 build/
 
 # config files
-app/config
+app/config/service-account.json
 
 app/.env
 

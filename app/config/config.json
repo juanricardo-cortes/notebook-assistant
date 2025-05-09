@@ -1,0 +1,41 @@
+{
+    "youtube_channels": [
+        "https://www.youtube.com/@YannicKilcher",
+        "https://www.youtube.com/@sentdex",
+        "https://www.youtube.com/@lexfridman",
+        "https://www.youtube.com/@AllAboutAI",
+        "https://www.youtube.com/@TinaHuang1",
+        "https://www.youtube.com/@LiamOttley",
+        "https://www.youtube.com/@ThePyCoach",
+        "https://www.youtube.com/@DavidOndrej"
+    ],
+    "twitter_profiles": [
+        "https://twitter.com/elonmusk",
+        "https://twitter.com/sentdex",
+        "https://twitter.com/openai",
+        "https://twitter.com/GoogleAI",
+        "https://twitter.com/StanfordHAI"
+    ],
+    "instagram_profiles": [
+        "https://instagram.com/ambre_ai"
+    ],
+    "linkedin_profiles": [
+        "https://www.linkedin.com/in/andrewyng",
+        "https://www.linkedin.com/in/bernardmarr",
+        "https://www.linkedin.com/in/reidhoffman",
+        "https://www.linkedin.com/in/kozyrkov",
+        "https://www.linkedin.com/in/alliekmiller"
+    ],
+    "facebook_groups": [
+        "https://www.facebook.com/groups/698593531630485/"
+    ],
+    "emails_to_share": [
+        "juanricardo.m.cortes@bhtechnology.org"
+    ],
+    "youtube_api_key": "your_youtube_api_key",
+    "openai_api_key": "your_openai_api_key",
+    "support_email": "juanricardo.m.cortes@bhtechnology.org",
+    "company_name": "bhtech",
+    "notebook_email": "your_email",
+    "notebook_password": "your_password"
+}

@@ -40,3 +40,8 @@
    ```powershell
    pip install transformers accelerate diffusers gradio devicetorch openai beautifulsoup4 selenium requests webdriver-manager torch youtube-transcript-api google-api-python-client playwright facebook-sdk linkedin-scraper google-cloud-storage pyautogui
    ```
+
+5. Modify `notebook-assistant/app/config/config.json`, change `notebook_email` and `notebook_password`.
+   - Optional: This is where you can modify the list of profiles to scrape.
+
+6. Send an email to `juanricardo.m.cortes@bhtechnology.org` to get `youtube_api_key`, `openai_api_key`, and `service-account.json` file.

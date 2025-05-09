@@ -35,6 +35,7 @@ def main(args=None):
 
         start_monitoring()
         start_google_drive()
+        print("Google Drive upload completed.")
 
 def start_monitoring():
     print("Starting monitoring...")

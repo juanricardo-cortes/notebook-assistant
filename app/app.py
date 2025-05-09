@@ -7,3 +7,4 @@ if __name__ == "__main__":
 
     # Pass the parsed query parameters to the main function
     main(args)
+    

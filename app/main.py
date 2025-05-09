@@ -39,14 +39,14 @@ def main(args=None):
 def start_monitoring():
     print("Starting monitoring...")
     all_files = [
-        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_StanfordHAI_20250509.txt",
-        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_sentdex_20250509.txt",
-        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_openai_20250509.txt",
-        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_GoogleAI_20250509.txt",
-        "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_elonmusk_20250509.txt"
+        # "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_StanfordHAI_20250509.txt",
+        # "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_sentdex_20250509.txt",
+        # "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_openai_20250509.txt",
+        # "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_GoogleAI_20250509.txt",
+        # "C:/pinokio/api/notebook-assistant/app/output/twitter/20250509/twitter_elonmusk_20250509.txt"
     ]
-    # all_files.extend(monitor_youtube_channels())
-    # all_files.extend(monitor_twitter_profiles())
+    all_files.extend(monitor_youtube_channels())
+    all_files.extend(monitor_twitter_profiles())
     # all_files.extend(monitor_linkedin_profiles())
     # all_files.extend(monitor_instagram_profiles())
     # all_files.extend(monitor_facebook_groups())
@@ -57,35 +57,35 @@ def monitor_youtube_channels():
     api_key = CONFIG["youtube_api_key"]
     channel_urls = CONFIG["youtube_channels"]
     youtube_service = YouTubeService(api_key)
-    monitor = SocialMonitor(youtube_service, channel_urls)
+    monitor = SocialMonitor(youtube_service, channel_urls, CONFIG)
     return monitor.execute_monitoring()
 
 def monitor_twitter_profiles():
     driver = AntiDetectDriver().get_driver()
     twitter_scraper = TwitterScraper(driver)
     twitter_profiles = CONFIG["twitter_profiles"]
-    monitor = SocialMonitor(twitter_scraper, twitter_profiles)
+    monitor = SocialMonitor(twitter_scraper, twitter_profiles, CONFIG)
     return monitor.execute_monitoring()
 
 def monitor_instagram_profiles():
     driver = AntiDetectDriver().get_driver()
     instagram_scraper = InstagramScraper(driver)
     instagram_profiles = CONFIG["instagram_profiles"]
-    monitor = SocialMonitor(instagram_scraper, instagram_profiles)
+    monitor = SocialMonitor(instagram_scraper, instagram_profiles, CONFIG)
     return monitor.execute_monitoring()
 
 def monitor_linkedin_profiles():
     driver = AntiDetectDriver().get_driver()
     linkedin_scraper = LinkedInScraper(driver)
     linkedin_profiles = CONFIG["linkedin_profiles"]
-    monitor = SocialMonitor(linkedin_scraper, linkedin_profiles)
+    monitor = SocialMonitor(linkedin_scraper, linkedin_profiles, CONFIG)
     return monitor.execute_monitoring()
 
 def monitor_facebook_groups():
     driver = AntiDetectDriver().get_driver()
     facebook_scraper = FacebookService(driver)
     facebook_groups = CONFIG["facebook_groups"]
-    monitor = SocialMonitor(facebook_scraper, facebook_groups)
+    monitor = SocialMonitor(facebook_scraper, facebook_groups, CONFIG)
     return monitor.execute_monitoring()
 
 def start_proxy_rotation():

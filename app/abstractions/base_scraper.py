@@ -3,6 +3,7 @@ import datetime
 import os
 import re
 import json
+import time
 from utils.openai_manager import OpenAIService
 
 class SocialScraper(ABC):
@@ -30,11 +31,21 @@ class SocialScraper(ABC):
 
     def check_content(self, content: list, config) -> bool:
         """Check if the content is empty or not."""
+        time.sleep(7)
         openai_service = OpenAIService(config["openai_api_key"])
-        instructions = "Check if the content talks about AI and does it have enough likes, comments, shares, etc. If yes, return True, else return False."
+        instructions = config["valuation_prompt"]
         prompt = f"Content: {content}"
         response = openai_service.generate_response(prompt, instructions)
         print(f"Response from OpenAI: {response}")
         if response.lower() == "true":
             return True
         return False    
+    
+    def extract_important_links(self, content: list, config) -> str:
+        """Extract important links from the content."""
+        openai_service = OpenAIService(config["openai_api_key"])
+        instructions = config["extract_links_prompt"]
+        prompt = f"Content: {content}"
+        response = openai_service.generate_response(prompt, instructions)
+        print(f"Response from OpenAI: {response}")
+        return response

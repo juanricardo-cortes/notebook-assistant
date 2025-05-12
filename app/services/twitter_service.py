@@ -16,7 +16,7 @@ class TwitterScraper(SocialScraper):
 
     def scrape_profile(self, profile_url: str) -> list:
         self.driver.get(profile_url)
-        time.sleep(60)  # Wait for the page to load
+        time.sleep(30)  # Wait for the page to load
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         tweets = []
 
@@ -40,7 +40,7 @@ class TwitterScraper(SocialScraper):
                 ).date()
 
                 # Check if the tweet is from yesterday
-                if True:
+                if tweet_date >= yesterday:
                     try:
                         content = tweet.find_element(By.CSS_SELECTOR, "div[lang]").text
                     except Exception:

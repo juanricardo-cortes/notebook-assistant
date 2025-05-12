@@ -11,6 +11,7 @@ class SocialMonitor:
     def execute_monitoring(self):
         processed_data = []
         important_links = []
+        generated_titles = []
 
         for url in self.profile_urls:
             try:
@@ -24,14 +25,14 @@ class SocialMonitor:
                         self.filename = self.scraper.save_content(profile_handle, data, self.scraper.output_folder.split('/')[-2])
                         self.upload_to_gcs("bhtech")  # Replace with your GCS bucket name
                         processed_data.append(f"C:/pinokio/api/notebook-assistant/app/{self.filename}")  # Append data as a JSON string
-                    
+                        generated_titles.append(self.scraper.generate_title(data, config=self.config))
                         important_links.append(self.scraper.extract_important_links(data, config=self.config))
                         print(f"Important links extracted: {important_links}")
                     else:
                         print(f"Content is not relevant for {profile_handle}.")
             except Exception as e:
                 print(f"Error processing {url}: {str(e)}")
-        return processed_data, important_links
+        return processed_data, important_links, generated_titles
                 
     def upload_to_gcs(self, bucket_name: str):
         from utils.storage_manager import StorageManager

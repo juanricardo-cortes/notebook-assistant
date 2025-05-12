@@ -23,7 +23,6 @@ CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "config.json")
 with open(CONFIG_PATH, "r") as config_file:
     CONFIG = json.load(config_file)
 
-
 def main(args=None):
     if args is None:
         args = []
@@ -38,34 +37,43 @@ def main(args=None):
 
 def start_monitoring():
     print("Starting monitoring...")
-    # youtube_data, youtube_links = monitor_youtube_channels()
-    twitter_data, twitter_links = monitor_twitter_profiles()
-    # instagram_data, instagram_links = monitor_instagram_profiles()
-    # linkedin_data, linkedin_links = monitor_linkedin_profiles()
-    # facebook_data, facebook_links = monitor_facebook_groups()
+    # youtube_data, youtube_links, youtube_titles = monitor_youtube_channels()
+    twitter_data, twitter_links, twitter_titles = monitor_twitter_profiles()
+    # instagram_data, instagram_links, instagram_titles = monitor_instagram_profiles()
+    # linkedin_data, linkedin_links, linkedin_titles = monitor_linkedin_profiles()
+    # facebook_data, facebook_links, facebook_titles = monitor_facebook_groups()
     
     all_files = [] 
     all_links = []
+    all_titles = []
 
     # all_files.extend(youtube_data)
-    all_files.extend(twitter_data)
-    # all_files.extend(instagram_data)
-    # all_files.extend(linkedin_data)
-    # all_files.extend(facebook_data)
-
     # all_links.extend(youtube_links)
-    all_links.extend(twitter_links)
-    # all_links.extend(instagram_links)
-    # all_links.extend(linkedin_links)
-    # all_links.extend(facebook_links)
+    # all_titles.extend(youtube_titles)
 
+    all_files.extend(twitter_data)
+    all_links.extend(twitter_links)
+    all_titles.extend(twitter_titles)
+
+    # all_files.extend(instagram_data)
+    # all_links.extend(instagram_links)
+    # all_titles.extend(instagram_titles)
+
+    # all_files.extend(linkedin_data)
+    # all_links.extend(linkedin_links)
+    # all_titles.extend(linkedin_titles)
+
+    # all_files.extend(facebook_data)
+    # all_links.extend(facebook_links)
+    # all_titles.extend(facebook_titles)
+    
     if not all_files:
         print("No data to process. Stopping execution.")
         return
     else:
         start_notebook_assistant(all_files)
         print("Monitoring completed.")
-        start_google_drive(all_links)
+        start_google_drive(all_links, all_titles)
         print("Google Drive upload completed.")
 
 def monitor_youtube_channels():
@@ -128,13 +136,20 @@ def start_notebook_assistant(processed_data):
     notebook_assistant = NotebookDefault(driver=driver)
     notebook_assistant.generate_audio_podcast_from_profiles(processed_data)
 
-def start_google_drive(all_links):
+def start_google_drive(all_links, all_titles):
     time.sleep(10)  # Wait for the file to be ready
+    
+    titles_text = "\n".join(all_titles)
+    openai_service = OpenAIService(CONFIG["openai_api_key"])
+    instructions = CONFIG["title_prompt"]
+    prompt = f"Content: {titles_text}"
+    response = openai_service.generate_response(prompt, instructions)
+
     credentials_provider = CredentialsProvider(CONFIG)
     credentials = credentials_provider.get_credentials()
     uploader = GoogleDriveUploader(credentials=credentials)
     uploader.authenticate()
-    file_metadata = uploader.upload_file(emails_to_share=CONFIG["emails_to_share"])
+    file_metadata = uploader.upload_file(title=response, emails_to_share=CONFIG["emails_to_share"])
 
     links_text = "\n".join(all_links)
     openai_service = OpenAIService(CONFIG["openai_api_key"])

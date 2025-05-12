@@ -49,3 +49,12 @@ class SocialScraper(ABC):
         response = openai_service.generate_response(prompt, instructions)
         print(f"Response from OpenAI: {response}")
         return response
+    
+    def generate_title(self, data, config) -> str:
+        """Get summary of the content."""
+        openai_service = OpenAIService(config["openai_api_key"])
+        instructions = config["title_prompt"]
+        prompt = f"Content: {data}"
+        response = openai_service.generate_response(prompt, instructions)
+        print(f"Response from OpenAI: {response}")
+        return response

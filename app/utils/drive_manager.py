@@ -76,16 +76,19 @@ class GoogleDriveUploader:
                 fields='id'
             ).execute()
 
-    def upload_file(self, emails_to_share=[]):
+    def upload_file(self, title, emails_to_share=[]):
         if not self.drive_service:
             raise Exception("You must authenticate first before uploading files.")
 
-        # Step 1: Ensure "Notebook" folder exists in root
-        notebook_folder_id = self.get_or_create_folder("Notebook")
+        # Step 1: Ensure "BH TECH/07. MISCELLANEOUS/Ai, Google Cloud, Vertex Ai/Ai Podcast" folder exists
+        bh_tech_folder_id = self.get_or_create_folder("BH TECH")
+        misc_folder_id = self.get_or_create_folder("07. MISCELLANEOUS", parent_id=bh_tech_folder_id)
+        ai_folder_id = self.get_or_create_folder("Ai, Google Cloud, Vertex Ai", parent_id=misc_folder_id)
+        podcast_folder_id = self.get_or_create_folder("Ai Podcast", parent_id=ai_folder_id)
 
-        # Step 2: Ensure today's date folder exists inside "Notebook"
+        # Step 2: Ensure today's date folder exists inside "Ai Podcast"
         date_today = datetime.now().strftime('%m%d%Y')
-        dated_folder_id = self.get_or_create_folder(date_today, parent_id=notebook_folder_id)
+        dated_folder_id = self.get_or_create_folder(date_today, parent_id=podcast_folder_id)
 
         # Step 3: Get latest download file
         downloads_path = self.get_downloads_folder()
@@ -93,14 +96,17 @@ class GoogleDriveUploader:
         if not file_path:
             raise Exception("No files found in the Downloads folder.")
 
-        # Step 4: Upload file to the dated folder
-        file_metadata = {'name': f"{date_today}_AI_UPDATES", 'parents': [dated_folder_id]}
+        # Step 4: Generate a title as a summary (placeholder logic for now)
+        title_summary = title  # Replace with actual logic to generate a summary
+
+        # Step 5: Upload file to the dated folder
+        file_metadata = {'name': f"{date_today}_{title_summary}", 'parents': [dated_folder_id]}
         media = MediaFileUpload(file_path, resumable=True)
         file = self.drive_service.files().create(
             body=file_metadata, media_body=media, fields='id,webViewLink'
         ).execute()
 
-        # Step 5: Share the dated folder with provided emails
+        # Step 6: Share the dated folder with provided emails
         if emails_to_share:
             self.share_with_emails(dated_folder_id, emails_to_share, role='writer')
 

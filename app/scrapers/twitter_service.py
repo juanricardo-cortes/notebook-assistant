@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from abstractions.base_scraper import SocialScraper
 from core.scroller import InfiniteScrollHelper
+from core.rate_limiter import RateLimiter
 import datetime
 import re
 import time
@@ -16,7 +17,7 @@ class TwitterScraper(SocialScraper):
 
     def scrape_profile(self, profile_url: str) -> list:
         self.driver.get(profile_url)
-        time.sleep(30)  # Wait for the page to load
+        RateLimiter.random_delay(30, 60)
         yesterday = datetime.date.today() - datetime.timedelta(days=1)
         tweets = []
 

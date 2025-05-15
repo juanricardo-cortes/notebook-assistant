@@ -17,3 +17,4 @@ google-cloud-storage
 facebook-sdk
 pyautogui
 pydrive2
+google-cloud-bigquery

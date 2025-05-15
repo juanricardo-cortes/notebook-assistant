@@ -5,7 +5,7 @@ import re
 import json
 import time
 from utils.openai_manager import OpenAIService
-
+from core.rate_limiter import RateLimiter
 class SocialScraper(ABC):
     def __init__(self, output_folder):
         date_str = datetime.date.today().strftime("%Y%m%d")
@@ -19,6 +19,7 @@ class SocialScraper(ABC):
 
     def save_content(self, profile_handle: str, content: list, platform: str):
         """Save scraped content to JSON file using YouTube-style naming convention"""
+        RateLimiter.random_delay()
         safe_handle = re.sub(r'[^\w\-_. ]', '_', profile_handle)
         date_str = datetime.date.today().strftime("%Y%m%d")
         filename = f"{self.output_folder}/{platform}_{safe_handle}_{date_str}.txt"
@@ -31,8 +32,8 @@ class SocialScraper(ABC):
 
     def check_content(self, content: list, config) -> bool:
         """Check if the content is empty or not."""
-        time.sleep(7)
-        openai_service = OpenAIService(config["openai_api_key"])
+        RateLimiter.random_delay()
+        openai_service = OpenAIService(config["openai_api_key"])    
         instructions = config["valuation_prompt"]
         prompt = f"Content: {content}"
         response = openai_service.generate_response(prompt, instructions)
@@ -43,6 +44,7 @@ class SocialScraper(ABC):
     
     def extract_important_links(self, content: list, config) -> str:
         """Extract important links from the content."""
+        RateLimiter.random_delay()
         openai_service = OpenAIService(config["openai_api_key"])
         instructions = config["extract_links_prompt"]
         prompt = f"Content: {content}"
@@ -52,6 +54,7 @@ class SocialScraper(ABC):
     
     def generate_title(self, data, config) -> str:
         """Get summary of the content."""
+        RateLimiter.random_delay()
         openai_service = OpenAIService(config["openai_api_key"])
         instructions = config["title_prompt"]
         prompt = f"Content: {data}"

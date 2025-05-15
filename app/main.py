@@ -3,13 +3,15 @@ import json
 import os
 import time
 from core.driver import AntiDetectDriver
-from services.youtube_service import YouTubeService
-from services.twitter_service import TwitterScraper
-from services.instagram_service import InstagramScraper
-from services.linkedin_service import LinkedInScraper
-from services.facebook_service import FacebookService
+from scrapers.youtube_service import YouTubeService
+from scrapers.twitter_service import TwitterScraper
+from scrapers.instagram_service import InstagramScraper
+from scrapers.linkedin_service import LinkedInScraper
+from scrapers.facebook_service import FacebookService
+from scrapers.newsletter_service import NewsletterService
 from monitors.social_monitor import SocialMonitor
 from core.proxy_manager import FreeProxyManager
+from core.rate_limiter import RateLimiter
 
 from utils.drive_manager import GoogleDriveUploader
 from utils.gmail_manager import GmailService
@@ -17,6 +19,9 @@ from utils.credentials_provider import CredentialsProvider
 from utils.email_provider import EmailProvider
 from features.notebook_default import NotebookDefault
 from utils.openai_manager import OpenAIService
+
+from utils.bigquery_manager import BigQueryManager
+
 
 # Load configuration from the config file
 CONFIG_PATH = os.path.join(os.path.dirname(__file__), "config", "config.json")
@@ -34,26 +39,37 @@ def main(args=None):
         # start_email_provider()
 
         start_monitoring()
+        # start_bigquery()
+    
+    return
 
 def start_monitoring():
     print("Starting monitoring...")
     # youtube_data, youtube_links, youtube_titles = monitor_youtube_channels()
-    twitter_data, twitter_links, twitter_titles = monitor_twitter_profiles()
+    # twitter_data, twitter_links, twitter_titles = monitor_twitter_profiles()
+    newsletter_data, newsletter_links, newsletter_titles = monitor_newsletters()
+
     # instagram_data, instagram_links, instagram_titles = monitor_instagram_profiles()
     # linkedin_data, linkedin_links, linkedin_titles = monitor_linkedin_profiles()
     # facebook_data, facebook_links, facebook_titles = monitor_facebook_groups()
-    
+
     all_files = [] 
     all_links = []
     all_titles = []
 
+   
+    
     # all_files.extend(youtube_data)
     # all_links.extend(youtube_links)
     # all_titles.extend(youtube_titles)
 
-    all_files.extend(twitter_data)
-    all_links.extend(twitter_links)
-    all_titles.extend(twitter_titles)
+    # all_files.extend(twitter_data)
+    # all_links.extend(twitter_links)
+    # all_titles.extend(twitter_titles)
+
+    all_files.extend(newsletter_data)
+    all_links.extend(newsletter_links)
+    all_titles.extend(newsletter_titles)
 
     # all_files.extend(instagram_data)
     # all_links.extend(instagram_links)
@@ -75,6 +91,13 @@ def start_monitoring():
         print("Monitoring completed.")
         start_google_drive(all_links, all_titles)
         print("Google Drive upload completed.")
+
+def monitor_newsletters():
+    newsletter_scraper = NewsletterService(config=CONFIG)
+    newsletter_urls = CONFIG["newsletter_urls"]
+    monitor = SocialMonitor(newsletter_scraper, newsletter_urls, CONFIG)
+    processed_data = monitor.execute_monitoring()
+    return processed_data
 
 def monitor_youtube_channels():
     api_key = CONFIG["youtube_api_key"]
@@ -129,7 +152,7 @@ def start_email_provider():
         email, password = mail_api.create_email_with_credentials()
         print("Generated Email:", email)
         print("Generated Password:", password)
-        time.sleep(2)
+        RateLimiter.random_delay()
 
 def start_notebook_assistant(processed_data):
     driver = AntiDetectDriver().get_driver()
@@ -146,11 +169,12 @@ def start_google_drive(all_links, all_titles):
     response = openai_service.generate_response(prompt, instructions)
 
     credentials_provider = CredentialsProvider(CONFIG)
-    credentials = credentials_provider.get_credentials()
+    credentials = credentials_provider.get_credentials(CONFIG["drive_email"])
     uploader = GoogleDriveUploader(credentials=credentials)
     uploader.authenticate()
     file_metadata = uploader.upload_file(title=response, emails_to_share=CONFIG["emails_to_share"])
 
+    RateLimiter.random_delay(5,10)
     links_text = "\n".join(all_links)
     openai_service = OpenAIService(CONFIG["openai_api_key"])
     instructions = CONFIG["summarize_prompt"]
@@ -165,6 +189,16 @@ def start_google_drive(all_links, all_titles):
             subject='Daily Ai Podcast Updates',
             body=body_with_links
         )
+
+def start_bigquery():
+    credentials_provider = CredentialsProvider(CONFIG)
+    credentials = credentials_provider.get_credentials(CONFIG["bigquery_email"])
+    project_id = CONFIG["project_id"]
+    dataset_id = CONFIG["dataset_id"]
+    
+    bigquery_manager = BigQueryManager(project_id, dataset_id, credentials)
+    print(f"BigQuery dataset {dataset_id} initialized successfully.")
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])

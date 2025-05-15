@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Notebook Assistant</title>
+    <title>Sign Up</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,7 +40,7 @@
             margin-bottom: 8px;
         }
 
-        input[type="text"], input[type="email"] {
+        input[type="email"] {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
@@ -74,47 +74,21 @@
     </style>
 </head>
 <body>
-    <h1>Webscraper Assistant</h1>
-
-    <div id="main-menu">
-        <form id="features-form">
-            <button type="submit">Scrape</button>
-            <div style="margin-bottom: 10px;"></div>
-            <button type="button" id="signup-button">Sign Up</button>
-        </form>
-    </div>
-
-    <div id="signup-form" style="display: none;">
-        <form id="signup-form-inner">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" required>
-            <button type="submit">Submit</button>
-        </form>
-    </div>
+    <h1>Sign Up</h1>
+    <form id="signup-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <button type="submit">Submit</button>
+    </form>
 
     <script>
-        document.querySelector("#features-form").addEventListener("submit", async (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-
-            let params = new URLSearchParams();
-            params.append("feature", "scrape");
-
-            location.href = "start.js?" + params.toString();
-        });
-
-        document.getElementById("signup-button").addEventListener("click", () => {
-            document.getElementById("main-menu").style.display = "none";
-            document.getElementById("signup-form").style.display = "block";
-        });
-
-        document.querySelector("#signup-form-inner").addEventListener("submit", async (e) => {
+        document.getElementById("signup-form").addEventListener("submit", async (e) => {
             e.preventDefault();
             e.stopPropagation();
 
             let email = document.getElementById("email").value;
             let params = new URLSearchParams();
-            params.append("feature", email);
+            params.append("email", email);
 
             location.href = "start.js?" + params.toString();
         });

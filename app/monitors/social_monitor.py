@@ -19,8 +19,9 @@ class SocialMonitor:
                 print(f"Monitoring {profile_handle}...")
                 data = self.scraper.scrape_profile(url)
                 if data:
-                    self.data = data
-                    if self.scraper.check_content(data, config=self.config):
+                    print(f"Scraped data for {profile_handle}")
+                    self.data = self.scraper.check_content(data, config=self.config)
+                    if self.data.__len__() > 0:
                         print(f"Content is relevant for {profile_handle}.")
                         self.filename = self.scraper.save_content(profile_handle, data, self.scraper.output_folder.split('/')[-2])
                         self.upload_to_gcs("bhtech")  # Replace with your GCS bucket name
@@ -30,6 +31,8 @@ class SocialMonitor:
                         print(f"Important links extracted: {important_links}")
                     else:
                         print(f"Content is not relevant for {profile_handle}.")
+                else:
+                    print(f"No data found for {profile_handle}.")
             except Exception as e:
                 print(f"Error processing {url}: {str(e)}")
         return processed_data, important_links, generated_titles

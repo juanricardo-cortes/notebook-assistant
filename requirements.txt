@@ -18,3 +18,5 @@ facebook-sdk
 pyautogui
 pydrive2
 google-cloud-bigquery
+google-generativeai
+google-genai

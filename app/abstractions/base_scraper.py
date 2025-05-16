@@ -22,7 +22,8 @@ class SocialScraper(ABC):
         RateLimiter.random_delay()
         safe_handle = re.sub(r'[^\w\-_. ]', '_', profile_handle)
         date_str = datetime.date.today().strftime("%Y%m%d")
-        filename = f"{self.output_folder}/{platform}_{safe_handle}_{date_str}.txt"
+        random_str = ''.join([chr(i) for i in os.urandom(6)]).encode('utf-8').hex()[:6]
+        filename = f"{self.output_folder}/{platform}_{safe_handle}_{date_str}_{random_str}.txt"
         print(f"Saving content to {filename}...")
         
         with open(filename, 'w', encoding='utf-8') as f:
@@ -30,22 +31,24 @@ class SocialScraper(ABC):
 
         return filename
 
-    def check_content(self, content: list, config) -> bool:
+    def check_content(self, content: list, config) -> list:
         """Check if the content is empty or not."""
-        RateLimiter.random_delay()
-        openai_service = OpenAIService(config["openai_api_key"])    
+        openai_service = OpenAIService(config=config)    
         instructions = config["valuation_prompt"]
-        prompt = f"Content: {content}"
-        response = openai_service.generate_response(prompt, instructions)
-        print(f"Response from OpenAI: {response}")
-        if response.lower() == "true":
-            return True
-        return False    
-    
+        new_content = []
+        for content_item in content:
+            RateLimiter.random_delay()
+            prompt = f"Content: {content_item}"
+            response = openai_service.generate_response(prompt, instructions)
+            print(f"Response from OpenAI: {response}")
+            if "true" in response.lower():
+                new_content.append(content_item)
+        return new_content
+        
     def extract_important_links(self, content: list, config) -> str:
         """Extract important links from the content."""
         RateLimiter.random_delay()
-        openai_service = OpenAIService(config["openai_api_key"])
+        openai_service = OpenAIService(config=config)
         instructions = config["extract_links_prompt"]
         prompt = f"Content: {content}"
         response = openai_service.generate_response(prompt, instructions)
@@ -55,7 +58,7 @@ class SocialScraper(ABC):
     def generate_title(self, data, config) -> str:
         """Get summary of the content."""
         RateLimiter.random_delay()
-        openai_service = OpenAIService(config["openai_api_key"])
+        openai_service = OpenAIService(config=config)
         instructions = config["title_prompt"]
         prompt = f"Content: {data}"
         response = openai_service.generate_response(prompt, instructions)

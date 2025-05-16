@@ -1,90 +1,63 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-from abstractions.base_scraper import SocialScraper
-from core.scroller import InfiniteScrollHelper
-import datetime
+from datetime import datetime, timedelta
 import time
+from abstractions.base_scraper import SocialScraper
+import requests
 
 class InstagramScraper(SocialScraper):
-    def __init__(self, driver, output_folder='output/instagram'):
+    def __init__(self, output_folder='output/instagram', config=None):
         super().__init__(output_folder)
-        self.driver = driver
-        self.scroller = InfiniteScrollHelper(driver)
-        self.wait = WebDriverWait(driver, 25)
+        self.config = config
     
-    def close_popup(self):
-        try:
-            # Perform a click outside the popup to close it
-            body_element = self.driver.find_element(By.TAG_NAME, "body")
-            body_element.click()
-            print("Clicked outside the popup to close it.")
-        except Exception as e:
-            print(f"Failed to close popup by clicking outside: {e}")
-
     def scrape_profile(self, profile_url: str) -> list:
-        from playwright.sync_api import sync_playwright # type: ignore
+        url = "https://api.brightdata.com/datasets/v3/trigger"
+        headers = {
+            "Authorization": f"Bearer {self.config['brightdata_key']}",
+            "Content-Type": "application/json",
+        }
+        params = {
+            "dataset_id": "gd_lk5ns7kz21pck8jpis",
+            "include_errors": "true",
+            "type": "discover_new",
+            "discover_by": "url",
+        }
+        yesterday = datetime.utcnow() - timedelta(days=1)
+        start_of_yesterday = yesterday.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_yesterday = yesterday.replace(hour=23, minute=59, second=0, microsecond=0)
+        data = [
+            {"url":f"{profile_url}","num_of_posts":10,"start_date":f"{start_of_yesterday}","end_date":f"{end_of_yesterday}","post_type":"Post"},
+        ]
 
-        posts = []
-        
-        yesterday = datetime.date.today() - datetime.timedelta(days=1)
+        response = requests.post(url, headers=headers, params=params, json=data)
+        print(response.json())
 
-        with sync_playwright() as p:
-            browser = p.chromium.launch(headless=False)
-            context = browser.new_context()
-            page = context.new_page()
+        SNAPSHOT_ID = response.json().get('snapshot_id')
+        print('Snapshot ID:', SNAPSHOT_ID)
 
-            # Navigate to the profile URL
-            page.goto(profile_url)
+        headers = {
+            'Authorization': f'Bearer {self.config["brightdata_key"]}',
+            'Content-Type': 'application/json'
+        }
 
-            page.wait_for_timeout(10000)  # Wait for the page to load
+        url = f"https://api.brightdata.com/datasets/v3/snapshot/{SNAPSHOT_ID}"
+        params = {
+            "format": "json",
+        }
 
-            # Close any popups by clicking outside
-            try:
-                page.locator("body").click()
-                print("Clicked outside to close any popups.")
-            except Exception as e:
-                print(f"No popup to close or failed to close popup: {e}")
-
-            # Scroll and collect posts
-            while True:
-                try:
-                    # Wait for posts to load
-                    page.wait_for_selector("article.x1iyjqo2", timeout=10000)  # Updated selector and increased timeout
-
-                    # Extract posts
-                    post_elements = page.locator("article.x1iyjqo2 div._ac7v").element_handles()  # Updated selector
-                    print(f"Found {len(post_elements)} posts.")
-                    for post in post_elements:
-                        try:
-                            post_date = post.query_selector("time").get_attribute("datetime")
-                            post_date = datetime.datetime.strptime(post_date, "%Y-%m-%dT%H:%M:%S.%fZ").date()
-
-                            if post_date == yesterday:
-                                content = post.query_selector("div.x1lliihq").inner_text() if post.query_selector("div.x1lliihq") else "[Content not found]"  # Updated selector
-                                likes = post.query_selector("xpath=//span[contains(text(), 'likes')]").inner_text() if post.query_selector("xpath=//span[contains(text(), 'likes')]") else "0"
-                                comments = post.query_selector("xpath=//ul/li/div/span").inner_text() if post.query_selector("xpath=//ul/li/div/span") else "0"
-
-                                posts.append({
-                                    "date": str(post_date),
-                                    "content": content,
-                                    "likes": likes,
-                                    "comments": comments,
-                                    "url": profile_url
-                                })
-                            elif post_date < yesterday:
-                                browser.close()
-                                return posts
-                        except Exception as e:
-                            print(f"Error processing post: {e}")
-                            continue
-
-                    # Scroll down
-                    page.evaluate("window.scrollBy(0, document.body.scrollHeight)")
-                except Exception as e:
-                    print(f"Error during scrolling or extracting posts: {e}")
-                    break
-
-            browser.close()
-        return posts
-
+        returnresponse = None
+        while True:
+            response = requests.get(url, headers=headers, params=params)
+            print('Checking status...')
+            print('Response:', response)
+            if response.status_code == 202:
+                print('Response:', response.json())
+                time.sleep(30)
+                continue
+            elif response.status_code == 200:
+                print('Response:', response.json())
+                returnresponse = response.json()
+                break
+            else:
+                print('Error:', response.status_code, response.text)
+                time.sleep(30)
+                break            
+        return returnresponse

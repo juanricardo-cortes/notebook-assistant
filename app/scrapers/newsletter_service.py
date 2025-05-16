@@ -1,14 +1,15 @@
 from abstractions.base_scraper import SocialScraper
 import requests
-from bs4 import BeautifulSoup
+from bs4 import BeautifulSoup # type: ignore
 from utils.openai_manager import OpenAIService
 from core.rate_limiter import RateLimiter
+from datetime import datetime, timedelta
 
 class NewsletterService(SocialScraper):
     def __init__(self, output_folder='output/newsletter', config=None):
         super().__init__(output_folder)
         self.config = config
-        self.openai_service = OpenAIService(config["openai_api_key"]) if config else None
+        self.openai_service = OpenAIService(config=config) if config else None
 
     def scrape_text_from_links(self, links):
         """
@@ -96,18 +97,25 @@ class NewsletterService(SocialScraper):
         This is a placeholder function and should be implemented based on your requirements.
         """
         # Implement your date validation logic here
+        yesterday = datetime.now() - timedelta(days=1)
+        yesterday_str = yesterday.strftime("%b %d, %Y")
+        print(f"Yesterday's date: {yesterday_str}")
+
+        new_headers_and_links = []
         for info in headers_and_links:
             RateLimiter.random_delay(5,10)
-            instructions = "check if the content has yeserday's date in it, return true if it does, false otherwise"
-            prompt = f"Content: {info['text']}"
-            response = self.openai_service.generate_response(prompt, instructions)
-            print(f"Response from OpenAI: {response}")
-            if response.lower() == "true":
+            print("Check if info text has yesterday's date")
+            if not info.get('text'):
+                print(f"No text found for {info['header']}. Skipping...")
+                continue
+            print(f"Checking content for {info['header']}")
+            # Check if the content has yesterday's date
+            if yesterday_str in info['text']:
                 print(f"Content is relevant for {info['header']}.")
+                new_headers_and_links.append(info)
                 continue
             else:
                 print(f"Content is not relevant for {info['header']}.")
-                headers_and_links.remove(info)
                 continue 
-        return headers_and_links
+        return new_headers_and_links
     

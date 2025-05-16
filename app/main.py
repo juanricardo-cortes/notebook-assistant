@@ -38,47 +38,45 @@ def main(args=None):
         # start_proxy_rotation()        
         # start_email_provider()
 
-        start_monitoring()
+        test()
+        # start_monitoring()
         # start_bigquery()
     
     return
 
 def start_monitoring():
     print("Starting monitoring...")
-    # youtube_data, youtube_links, youtube_titles = monitor_youtube_channels()
-    # twitter_data, twitter_links, twitter_titles = monitor_twitter_profiles()
-    newsletter_data, newsletter_links, newsletter_titles = monitor_newsletters()
-
-    # instagram_data, instagram_links, instagram_titles = monitor_instagram_profiles()
-    # linkedin_data, linkedin_links, linkedin_titles = monitor_linkedin_profiles()
-    # facebook_data, facebook_links, facebook_titles = monitor_facebook_groups()
-
     all_files = [] 
     all_links = []
     all_titles = []
 
-   
     
+    # youtube_data, youtube_links, youtube_titles = monitor_youtube_channels()
     # all_files.extend(youtube_data)
     # all_links.extend(youtube_links)
     # all_titles.extend(youtube_titles)
 
+    # twitter_data, twitter_links, twitter_titles = monitor_twitter_profiles()
     # all_files.extend(twitter_data)
     # all_links.extend(twitter_links)
     # all_titles.extend(twitter_titles)
 
+    newsletter_data, newsletter_links, newsletter_titles = monitor_newsletters()
     all_files.extend(newsletter_data)
     all_links.extend(newsletter_links)
     all_titles.extend(newsletter_titles)
 
+    # instagram_data, instagram_links, instagram_titles = monitor_instagram_profiles()
     # all_files.extend(instagram_data)
     # all_links.extend(instagram_links)
     # all_titles.extend(instagram_titles)
 
+    # linkedin_data, linkedin_links, linkedin_titles = monitor_linkedin_profiles()
     # all_files.extend(linkedin_data)
     # all_links.extend(linkedin_links)
     # all_titles.extend(linkedin_titles)
 
+    # facebook_data, facebook_links, facebook_titles = monitor_facebook_groups()
     # all_files.extend(facebook_data)
     # all_links.extend(facebook_links)
     # all_titles.extend(facebook_titles)
@@ -87,9 +85,9 @@ def start_monitoring():
         print("No data to process. Stopping execution.")
         return
     else:
-        start_notebook_assistant(all_files)
-        print("Monitoring completed.")
-        start_google_drive(all_links, all_titles)
+        # start_notebook_assistant(all_files)
+        # print("Monitoring completed.")
+        # start_google_drive(all_links, all_titles)
         print("Google Drive upload completed.")
 
 def monitor_newsletters():
@@ -116,24 +114,21 @@ def monitor_twitter_profiles():
     return processed_data
 
 def monitor_instagram_profiles():
-    driver = AntiDetectDriver().get_driver()
-    instagram_scraper = InstagramScraper(driver)
+    instagram_scraper = InstagramScraper(config=CONFIG)
     instagram_profiles = CONFIG["instagram_profiles"]
     monitor = SocialMonitor(instagram_scraper, instagram_profiles, CONFIG)
     processed_data = monitor.execute_monitoring()
     return processed_data
 
 def monitor_linkedin_profiles():
-    driver = AntiDetectDriver().get_driver()
-    linkedin_scraper = LinkedInScraper(driver)
+    linkedin_scraper = LinkedInScraper(config=CONFIG)
     linkedin_profiles = CONFIG["linkedin_profiles"]
     monitor = SocialMonitor(linkedin_scraper, linkedin_profiles, CONFIG)
     processed_data = monitor.execute_monitoring()
     return processed_data
 
 def monitor_facebook_groups():
-    driver = AntiDetectDriver().get_driver()
-    facebook_scraper = FacebookService(driver)
+    facebook_scraper = FacebookService(config=CONFIG)
     facebook_groups = CONFIG["facebook_groups"]
     monitor = SocialMonitor(facebook_scraper, facebook_groups, CONFIG)
     processed_data = monitor.execute_monitoring()
@@ -163,7 +158,7 @@ def start_google_drive(all_links, all_titles):
     time.sleep(10)  # Wait for the file to be ready
     
     titles_text = "\n".join(all_titles)
-    openai_service = OpenAIService(CONFIG["openai_api_key"])
+    openai_service = OpenAIService(config=CONFIG)
     instructions = CONFIG["title_prompt"]
     prompt = f"Content: {titles_text}"
     response = openai_service.generate_response(prompt, instructions)
@@ -176,7 +171,7 @@ def start_google_drive(all_links, all_titles):
 
     RateLimiter.random_delay(5,10)
     links_text = "\n".join(all_links)
-    openai_service = OpenAIService(CONFIG["openai_api_key"])
+    openai_service = OpenAIService(config=CONFIG)
     instructions = CONFIG["summarize_prompt"]
     prompt = f"Content: {links_text}"
     response = openai_service.generate_response(prompt, instructions)
@@ -199,6 +194,8 @@ def start_bigquery():
     bigquery_manager = BigQueryManager(project_id, dataset_id, credentials)
     print(f"BigQuery dataset {dataset_id} initialized successfully.")
 
+def test():
+    print("Testing...")
 
 if __name__ == "__main__":
-    main(sys.argv[1:])
+    main(sys.argv[1:])  

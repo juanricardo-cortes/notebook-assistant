@@ -1,36 +1,65 @@
+from datetime import datetime, timedelta
+import time
 from abstractions.base_scraper import SocialScraper
-from facebook import GraphAPI # type: ignore
+import requests
 
 class FacebookService(SocialScraper):
-    def __init__(self, access_token, output_folder='output/facebook'):
+    def __init__(self, output_folder='output/facebook', config=None):
         super().__init__(output_folder)
-        self.graph = GraphAPI(access_token)
+        self.config = config
 
     def scrape_profile(self, group_url: str) -> list:
-        """Scrapes new posts from a Facebook group URL."""
-        # Extract group ID from the URL
-        group_id = group_url.split('/')[-1] if '/' in group_url else group_url
-        posts = self.graph.get_connections(group_id, 'feed')
-        return posts.get('data', [])
 
-    def get_user_profile(self):
-        return self.graph.get_object('me')
+        url = "https://api.brightdata.com/datasets/v3/trigger"
+        headers = {
+            "Authorization": f"Bearer {self.config['brightdata_key']}",
+            "Content-Type": "application/json",
+        }
+        params = {
+            "dataset_id": "gd_lz11l67o2cb3r0lkj3",
+            "include_errors": "true",
+        }
+        yesterday = datetime.utcnow() - timedelta(days=1)
+        start_of_yesterday = yesterday.replace(hour=0, minute=0, second=0, microsecond=0)
+        end_of_yesterday = yesterday.replace(hour=23, minute=59, second=0, microsecond=0)
+        data = [
+            {"url":f"{group_url}","start_date":f"{start_of_yesterday}","end_date":f"{end_of_yesterday}"},
+        ]
 
-    def get_user_posts(self):
-        return self.graph.get_connections('me', 'posts')
+        response = requests.post(url, headers=headers, params=params, json=data)
+        print(response.json())
 
-    def post_status(self, message):
-        return self.graph.put_object(parent_object='me', connection_name='feed', message=message)
+        response = requests.post(url, headers=headers, params=params, json=data)
+        print(response.json())
 
-    def get_page_posts(self, page_id):
-        return self.graph.get_connections(page_id, 'posts')
+        SNAPSHOT_ID = response.json().get('snapshot_id')
+        print('Snapshot ID:', SNAPSHOT_ID)
 
-    def post_to_page(self, page_id, message):
-        return self.graph.put_object(parent_object=page_id, connection_name='feed', message=message)
+        headers = {
+            'Authorization': f'Bearer {self.config["brightdata_key"]}',
+            'Content-Type': 'application/json'
+        }
 
-    def scrape_facebook_profile(self, profile_url: str) -> list:
-        """Scrapes new posts from a Facebook profile URL."""
-        # Extract profile ID from the URL (simplified example)
-        profile_id = profile_url.split('/')[-1] if '/' in profile_url else profile_url
-        posts = self.graph.get_connections(profile_id, 'posts')
-        return posts.get('data', [])
+        url = f"https://api.brightdata.com/datasets/v3/snapshot/{SNAPSHOT_ID}"
+        params = {
+            "format": "json",
+        }
+
+        returnresponse = None
+        while True:
+            response = requests.get(url, headers=headers, params=params)
+            print('Checking status...')
+            print('Response:', response)
+            if response.status_code == 202:
+                print('Response:', response.json())
+                time.sleep(30)
+                continue
+            elif response.status_code == 200:
+                print('Response:', response.json())
+                returnresponse = response.json()
+                break
+            else:
+                print('Error:', response.status_code, response.text)
+                time.sleep(30)
+                break            
+        return returnresponse

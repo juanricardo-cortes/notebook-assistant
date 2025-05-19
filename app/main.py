@@ -38,57 +38,192 @@ def main(args=None):
         # start_proxy_rotation()        
         # start_email_provider()
 
-        test()
-        # start_monitoring()
+        # test()
+        start_monitoring()
         # start_bigquery()
     
     return
 
 def start_monitoring():
     print("Starting monitoring...")
-    all_files = [] 
-    all_links = []
-    all_titles = []
+    #1 new_ai_tools
+    #2 new_ai_updates_and_improvements
+    #3 new_ai_business_innovations_and_applications
+    #4 new_ai_discussions_and_trends
 
-    
-    # youtube_data, youtube_links, youtube_titles = monitor_youtube_channels()
-    # all_files.extend(youtube_data)
-    # all_links.extend(youtube_links)
-    # all_titles.extend(youtube_titles)
+    all_files1 = [] 
+    all_links1 = []
+    all_titles1 = []
 
-    # twitter_data, twitter_links, twitter_titles = monitor_twitter_profiles()
-    # all_files.extend(twitter_data)
-    # all_links.extend(twitter_links)
-    # all_titles.extend(twitter_titles)
+    all_files2 = []
+    all_links2 = []
+    all_titles2 = []
 
-    newsletter_data, newsletter_links, newsletter_titles = monitor_newsletters()
-    all_files.extend(newsletter_data)
-    all_links.extend(newsletter_links)
-    all_titles.extend(newsletter_titles)
+    all_files3 = []
+    all_links3 = []
+    all_titles3 = []
 
-    # instagram_data, instagram_links, instagram_titles = monitor_instagram_profiles()
-    # all_files.extend(instagram_data)
-    # all_links.extend(instagram_links)
-    # all_titles.extend(instagram_titles)
+    all_files4 = []
+    all_links4 = []
+    all_titles4 = []
 
-    # linkedin_data, linkedin_links, linkedin_titles = monitor_linkedin_profiles()
-    # all_files.extend(linkedin_data)
-    # all_links.extend(linkedin_links)
-    # all_titles.extend(linkedin_titles)
+    (linkedin_data1, linkedin_links1, linkedin_titles1, 
+    linkedin_data2, linkedin_links2, linkedin_titles2, 
+    linkedin_data3, linkedin_links3, linkedin_titles3,
+    linkedin_data4, linkedin_links4, linkedin_titles4) = monitor_linkedin_profiles()
+    all_files1.extend(linkedin_data1)
+    all_links1.extend(linkedin_links1)
+    all_titles1.extend(linkedin_titles1)
 
-    # facebook_data, facebook_links, facebook_titles = monitor_facebook_groups()
-    # all_files.extend(facebook_data)
-    # all_links.extend(facebook_links)
-    # all_titles.extend(facebook_titles)
-    
-    if not all_files:
-        print("No data to process. Stopping execution.")
-        return
+    all_files2.extend(linkedin_data2)
+    all_links2.extend(linkedin_links2)
+    all_titles2.extend(linkedin_titles2)
+
+    all_files3.extend(linkedin_data3)
+    all_links3.extend(linkedin_links3)
+    all_titles3.extend(linkedin_titles3)
+
+    all_files4.extend(linkedin_data4)
+    all_links4.extend(linkedin_links4)
+    all_titles4.extend(linkedin_titles4)
+
+    (instagram_data1, instagram_links1, instagram_titles1,
+    instagram_data2, instagram_links2, instagram_titles2,
+    instagram_data3, instagram_links3, instagram_titles3,
+    instagram_data4, instagram_links4, instagram_titles4) = monitor_instagram_profiles()
+    all_files1.extend(instagram_data1)
+    all_links1.extend(instagram_links1)
+    all_titles1.extend(instagram_titles1)
+
+    all_files2.extend(instagram_data2)
+    all_links2.extend(instagram_links2)
+    all_titles2.extend(instagram_titles2)
+
+    all_files3.extend(instagram_data3)
+    all_links3.extend(instagram_links3)
+    all_titles3.extend(instagram_titles3)
+
+    all_files4.extend(instagram_data4)
+    all_links4.extend(instagram_links4)
+    all_titles4.extend(instagram_titles4)
+
+    (newsletter_data1, newsletter_links1, newsletter_titles1,
+    newsletter_data2, newsletter_links2, newsletter_titles2,
+    newsletter_data3, newsletter_links3, newsletter_titles3,
+    newsletter_data4, newsletter_links4, newsletter_titles4) = monitor_newsletters()
+    all_files1.extend(newsletter_data1)
+    all_links1.extend(newsletter_links1)
+    all_titles1.extend(newsletter_titles1)
+
+    all_files2.extend(newsletter_data2)
+    all_links2.extend(newsletter_links2)
+    all_titles2.extend(newsletter_titles2)
+
+    all_files3.extend(newsletter_data3)
+    all_links3.extend(newsletter_links3)
+    all_titles3.extend(newsletter_titles3)
+
+    all_files4.extend(newsletter_data4)
+    all_links4.extend(newsletter_links4)
+    all_titles4.extend(newsletter_titles4)
+
+    (youtube_data1, youtube_links1, youtube_titles1,
+    youtube_data2, youtube_links2, youtube_titles2,
+    youtube_data3, youtube_links3, youtube_titles3,
+    youtube_data4, youtube_links4, youtube_titles4) = monitor_youtube_channels()
+    all_files1.extend(youtube_data1)
+    all_links1.extend(youtube_links1)
+    all_titles1.extend(youtube_titles1)
+
+    all_files2.extend(youtube_data2)
+    all_links2.extend(youtube_links2)
+    all_titles2.extend(youtube_titles2)
+
+    all_files3.extend(youtube_data3)
+    all_links3.extend(youtube_links3)
+    all_titles3.extend(youtube_titles3)
+
+    all_files4.extend(youtube_data4)
+    all_links4.extend(youtube_links4)
+    all_titles4.extend(youtube_titles4)
+
+    (twitter_data1, twitter_links1, twitter_titles1,
+    twitter_data2, twitter_links2, twitter_titles2,
+    twitter_data3, twitter_links3, twitter_titles3,
+    twitter_data4, twitter_links4, twitter_titles4) = monitor_twitter_profiles()
+    all_files1.extend(twitter_data1)
+    all_links1.extend(twitter_links1)
+    all_titles1.extend(twitter_titles1)
+
+    all_files2.extend(twitter_data2)
+    all_links2.extend(twitter_links2)
+    all_titles2.extend(twitter_titles2)
+
+    all_files3.extend(twitter_data3)
+    all_links3.extend(twitter_links3)
+    all_titles3.extend(twitter_titles3)
+
+    all_files4.extend(twitter_data4)
+    all_links4.extend(twitter_links4)
+    all_titles4.extend(twitter_titles4)
+
+    (facebook_data1, facebook_links1, facebook_titles1,
+    facebook_data2, facebook_links2, facebook_titles2,
+    facebook_data3, facebook_links3, facebook_titles3,
+    facebook_data4, facebook_links4, facebook_titles4) = monitor_facebook_groups()
+    all_files1.extend(facebook_data1)
+    all_links1.extend(facebook_links1)
+    all_titles1.extend(facebook_titles1)
+
+    all_files2.extend(facebook_data2)
+    all_links2.extend(facebook_links2)
+    all_titles2.extend(facebook_titles2)
+
+    all_files3.extend(facebook_data3)
+    all_links3.extend(facebook_links3)
+    all_titles3.extend(facebook_titles3)
+
+    all_files4.extend(facebook_data4)
+    all_links4.extend(facebook_links4)
+    all_titles4.extend(facebook_titles4)
+
+    # Process and upload for all_files1
+    if not all_files1:
+        print("No data to process for category 1. Stopping execution.")
     else:
-        # start_notebook_assistant(all_files)
-        # print("Monitoring completed.")
-        # start_google_drive(all_links, all_titles)
-        print("Google Drive upload completed.")
+        start_notebook_assistant(all_files1)
+        print("Monitoring for category 1 completed.")
+        start_google_drive(all_links1, all_titles1, subject="NEW TOOLS")
+        print("Google Drive upload for category 1 completed.")
+
+    # Process and upload for all_files2
+    if not all_files2:
+        print("No data to process for category 2. Stopping execution.")
+    else:
+        start_notebook_assistant(all_files2)
+        print("Monitoring for category 2 completed.")
+        start_google_drive(all_links2, all_titles2, subject="UPDATES AND IMPROVEMENTS")
+        print("Google Drive upload for category 2 completed.")
+
+    # Process and upload for all_files3
+    if not all_files3:
+        print("No data to process for category 3. Stopping execution.")
+    else:
+        start_notebook_assistant(all_files3)
+        print("Monitoring for category 3 completed.")
+        start_google_drive(all_links3, all_titles3, subject="BUSINESS INNOVATIONS")
+        print("Google Drive upload for category 3 completed.")
+
+    # Process and upload for all_files4
+    if not all_files4:
+        print("No data to process for category 4. Stopping execution.")
+    else:
+        start_notebook_assistant(all_files4)
+        print("Monitoring for category 4 completed.")
+        start_google_drive(all_links4, all_titles4, subject="DISCUSSIONS")
+        print("Google Drive upload for category 4 completed.")
+
+    
 
 def monitor_newsletters():
     newsletter_scraper = NewsletterService(config=CONFIG)
@@ -154,7 +289,7 @@ def start_notebook_assistant(processed_data):
     notebook_assistant = NotebookDefault(driver=driver)
     notebook_assistant.generate_audio_podcast_from_profiles(processed_data)
 
-def start_google_drive(all_links, all_titles):
+def start_google_drive(all_links, all_titles, subject):
     time.sleep(10)  # Wait for the file to be ready
     
     titles_text = "\n".join(all_titles)
@@ -176,12 +311,12 @@ def start_google_drive(all_links, all_titles):
     prompt = f"Content: {links_text}"
     response = openai_service.generate_response(prompt, instructions)
 
-    body_with_links = f"Daily podcast update has been uploaded to Google Drive. Link: {file_metadata['webViewLink']}\n\nAdditional Links:\n{response}"
+    body_with_links = f"{subject}: Daily podcast update has been uploaded to Google Drive. Link: {file_metadata['webViewLink']}\n\nAdditional Links:\n{response}"
     for email in CONFIG["emails_to_share"]:
         gmail_service = GmailService(credentials=credentials)
         gmail_service.send_email(
             to=email,
-            subject='Daily Ai Podcast Updates',
+            subject=f'[{subject}]: Daily Ai Podcast Updates',
             body=body_with_links
         )
 
@@ -196,6 +331,59 @@ def start_bigquery():
 
 def test():
     print("Testing...")
+
+    import requests
+
+    mapurl = "https://www.google.com/maps/place/SM+City+Marikina/@14.626017,121.0812158,17z/data=!3m1!4b1!4m6!3m5!1s0x3397b8261d0f20b5:0x45e3362dac0fc52a!8m2!3d14.6260118!4d121.0837907!16s%2Fm%2F043ln0g?entry=ttu&g_ep=EgoyMDI1MDUxMy4xIKXMDSoASAFQAw%3D%3D"
+
+    url = "https://api.brightdata.com/datasets/v3/trigger"
+    headers = {
+        "Authorization": f"Bearer {CONFIG['brightdata_key']}",
+        "Content-Type": "application/json",
+    }
+    params = {
+        "dataset_id": "gd_luzfs1dn2oa0teb81",
+        "include_errors": "true",
+    }
+    data = [
+        {"url":f"{mapurl}","days_limit":18}
+    ]
+
+    response = requests.post(url, headers=headers, params=params, json=data)
+    print(response.json())
+
+    SNAPSHOT_ID = response.json().get('snapshot_id')
+    print('Snapshot ID:', SNAPSHOT_ID)
+
+    headers = {
+        'Authorization': f'Bearer {CONFIG["brightdata_key"]}',
+        'Content-Type': 'application/json'
+    }
+
+    url = f"https://api.brightdata.com/datasets/v3/snapshot/{SNAPSHOT_ID}"
+    params = {
+        "format": "json",
+    }
+
+    returnresponse = None
+    while True:
+        response = requests.get(url, headers=headers, params=params)
+        print('Checking status...')
+        print('Response:', response)
+        if response.status_code == 202:
+            print('Response:', response.json())
+            time.sleep(30)
+            continue
+        elif response.status_code == 200:
+            print('Response:', response.json())
+            returnresponse = response.json()
+            break
+        else:
+            print('Error:', response.status_code, response.text)
+            time.sleep(30)
+            break            
+    return returnresponse
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])  

@@ -31,10 +31,10 @@ class SocialScraper(ABC):
 
         return filename
 
-    def check_content(self, content: list, config) -> list:
+    def check_content(self, content: list, config, valuation) -> list:
         """Check if the content is empty or not."""
         openai_service = OpenAIService(config=config)    
-        instructions = config["valuation_prompt"]
+        instructions = valuation
         new_content = []
         for content_item in content:
             RateLimiter.random_delay()

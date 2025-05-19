@@ -53,7 +53,7 @@ class NewsletterService(SocialScraper):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
-
+        RateLimiter.random_delay(10,20)
         # Fetch the website content
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
@@ -65,14 +65,79 @@ class NewsletterService(SocialScraper):
 
         # Extract links and their child headers
         headers_and_links = []
-        for link in soup.find_all('a', href=True):
-            # Check if the <a> tag has a header as a child
-            header = link.find(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
-            if header:
-                headers_and_links.append({
-                    'header': header.get_text(strip=True),
-                    'link': f"{url}{link['href']}"
-                })
+        new_url = url
+        new_url = self.modify_url(url)
+
+        if url == "https://openai.com/news" or url == "https://www.deeplearning.ai/the-batch":
+            for link in soup.find_all('a', href=True):
+                # Check if the <a> tag has a header as a child
+                header = link.find(['div'])
+                if header:
+                    if "https" in link['href'] or "http" in link['href']:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{link['href']}"
+                        })
+                    else:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{new_url}{link['href']}"
+                        })
+        elif url == "https://research.google/blog" or url == "https://news.mit.edu/topic/artificial-intelligence2":
+            for link in soup.find_all('a', href=True):
+                # Check if the <a> tag has a header as a child
+                header = link.find(['span'])
+                if header:
+                    if "https" in link['href'] or "http" in link['href']:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{link['href']}"
+                        })
+                    else:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{new_url}{link['href']}"
+                        })
+        elif url == "https://deepmind.google/discover/blog":
+            for link in soup.find_all('a', href=True):
+                # Check if the <a> tag has a header as a child
+                header = link.find(['p'])
+                if header:
+                    if "https" in link['href'] or "http" in link['href']:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{link['href']}"
+                        })
+                    else:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{new_url}{link['href']}"
+                        })
+        elif url == "https://www.kdnuggets.com":
+            for link in soup.find_all('a', href=True):
+                # Check if the <a> tag has a header as a child
+                header = link.find(['b'])
+                if header:
+                    if "https" in link['href'] or "http" in link['href']:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{link['href']}"
+                        })
+                    else:
+                        headers_and_links.append({
+                            'header': header.get_text(strip=True),
+                            'link': f"{new_url}{link['href']}"
+                        })
+        else:
+            for link in soup.find_all('a', href=True):
+                # Check if the <a> tag has a header as a child
+                header = link.find(['h1', 'h2', 'h3', 'h4', 'h5', 'h6'])
+                if header:
+                    headers_and_links.append({
+                        'header': header.get_text(strip=True),
+                        'link': f"{new_url}{link['href']}"
+                    })
+
         # Print the headers and links
         print(f"Found {len(headers_and_links)} headers and links:")
         for item in headers_and_links:
@@ -119,3 +184,25 @@ class NewsletterService(SocialScraper):
                 continue 
         return new_headers_and_links
     
+    def modify_url(self, url):
+        """
+        Modify the URL to point to the correct location.
+        This is a placeholder function and should be implemented based on your requirements.
+        """
+        new_url = url
+        print(f"Modifying URL: {url}")
+        # Implement your URL modification logic here
+        if url == "https://huggingface.co/blog":
+            new_url = "https://huggingface.co"
+        if url == "https://openai.com/news":
+            new_url = "https://openai.com"
+        if url == "https://research.google/blog":
+            new_url = "https://research.google"
+        if url == "https://deepmind.google/discover/blog":
+            new_url = "https://deepmind.google"
+        if url == "https://www.deeplearning.ai/the-batch":
+            new_url = "https://www.deeplearning.ai"
+        if url == "https://news.mit.edu/topic/artificial-intelligence2":
+            new_url = "https://news.mit.edu"
+
+        return new_url

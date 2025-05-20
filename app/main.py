@@ -67,149 +67,45 @@ def start_monitoring():
         future_twitter = executor.submit(run_monitor, monitor_twitter_profiles)
         future_facebook = executor.submit(run_monitor, monitor_facebook_groups)
 
-    
-        (linkedin_data1, linkedin_links1, linkedin_titles1, 
-         linkedin_data2, linkedin_links2, linkedin_titles2, 
-         linkedin_data3, linkedin_links3, linkedin_titles3,
-         linkedin_data4, linkedin_links4, linkedin_titles4) = future_linkedin.result()
+        (linkedin_data1, linkedin_data2, linkedin_data3, linkedin_data4,
+         linkedin_summary1, linkedin_summary2, linkedin_summary3, linkedin_summary4) = future_linkedin.result()
 
-        (instagram_data1, instagram_links1, instagram_titles1,
-         instagram_data2, instagram_links2, instagram_titles2,
-         instagram_data3, instagram_links3, instagram_titles3,
-         instagram_data4, instagram_links4, instagram_titles4) = future_instagram.result()
+        (instagram_data1, instagram_data2, instagram_data3, instagram_data4,
+         instagram_summary1, instagram_summary2, instagram_summary3, instagram_summary4) = future_instagram.result()
 
-        (newsletter_data1, newsletter_links1, newsletter_titles1,
-         newsletter_data2, newsletter_links2, newsletter_titles2,
-         newsletter_data3, newsletter_links3, newsletter_titles3,
-         newsletter_data4, newsletter_links4, newsletter_titles4) = future_newsletter.result()
+        (newsletter_data1, newsletter_data2, newsletter_data3, newsletter_data4,
+         newsletter_summary1, newsletter_summary2, newsletter_summary3, newsletter_summary4) = future_newsletter.result()
 
-        (youtube_data1, youtube_links1, youtube_titles1,
-         youtube_data2, youtube_links2, youtube_titles2,
-         youtube_data3, youtube_links3, youtube_titles3,
-         youtube_data4, youtube_links4, youtube_titles4) = future_youtube.result()
+        (youtube_data1, youtube_data2, youtube_data3, youtube_data4,
+         youtube_summary1, youtube_summary2, youtube_summary3, youtube_summary4) = future_youtube.result()
 
-        (twitter_data1, twitter_links1, twitter_titles1,
-         twitter_data2, twitter_links2, twitter_titles2,
-         twitter_data3, twitter_links3, twitter_titles3,
-         twitter_data4, twitter_links4, twitter_titles4) = future_twitter.result()
+        (twitter_data1, twitter_data2, twitter_data3, twitter_data4,
+         twitter_summary1, twitter_summary2, twitter_summary3, twitter_summary4) = future_twitter.result()
 
-        (facebook_data1, facebook_links1, facebook_titles1,
-         facebook_data2, facebook_links2, facebook_titles2,
-         facebook_data3, facebook_links3, facebook_titles3,
-         facebook_data4, facebook_links4, facebook_titles4) = future_facebook.result()
+        (facebook_data1, facebook_data2, facebook_data3, facebook_data4,
+         facebook_summary1, facebook_summary2, facebook_summary3, facebook_summary4) = future_facebook.result()
+        
         
     print("FINISHED MONITORING")
-    all_files1 = [] 
-    all_links1 = []
-    all_titles1 = []
+    # Initialize lists for each category
+    all_files1, all_files2, all_files3, all_files4 = [], [], [], []
+    all_summaries1, all_summaries2, all_summaries3, all_summaries4 = [], [], [], []
+    
+    # Extend data for each category
+    all_files1.extend(linkedin_data1); all_files2.extend(linkedin_data2); all_files3.extend(linkedin_data3); all_files4.extend(linkedin_data4)
+    all_files1.extend(instagram_data1); all_files2.extend(instagram_data2); all_files3.extend(instagram_data3); all_files4.extend(instagram_data4)
+    all_files1.extend(newsletter_data1); all_files2.extend(newsletter_data2); all_files3.extend(newsletter_data3); all_files4.extend(newsletter_data4)
+    all_files1.extend(youtube_data1); all_files2.extend(youtube_data2); all_files3.extend(youtube_data3); all_files4.extend(youtube_data4)
+    all_files1.extend(twitter_data1); all_files2.extend(twitter_data2); all_files3.extend(twitter_data3); all_files4.extend(twitter_data4)
+    all_files1.extend(facebook_data1); all_files2.extend(facebook_data2); all_files3.extend(facebook_data3); all_files4.extend(facebook_data4)
 
-    all_files2 = []
-    all_links2 = []
-    all_titles2 = []
-
-    all_files3 = []
-    all_links3 = []
-    all_titles3 = []
-
-    all_files4 = []
-    all_links4 = []
-    all_titles4 = []
-
-    all_files1.extend(linkedin_data1)
-    all_links1.extend(linkedin_links1)
-    all_titles1.extend(linkedin_titles1)
-
-    all_files2.extend(linkedin_data2)
-    all_links2.extend(linkedin_links2)
-    all_titles2.extend(linkedin_titles2)
-
-    all_files3.extend(linkedin_data3)
-    all_links3.extend(linkedin_links3)
-    all_titles3.extend(linkedin_titles3)
-
-    all_files4.extend(linkedin_data4)
-    all_links4.extend(linkedin_links4)
-    all_titles4.extend(linkedin_titles4)
-
-    all_files1.extend(instagram_data1)
-    all_links1.extend(instagram_links1)
-    all_titles1.extend(instagram_titles1)
-
-    all_files2.extend(instagram_data2)
-    all_links2.extend(instagram_links2)
-    all_titles2.extend(instagram_titles2)
-
-    all_files3.extend(instagram_data3)
-    all_links3.extend(instagram_links3)
-    all_titles3.extend(instagram_titles3)
-
-    all_files4.extend(instagram_data4)
-    all_links4.extend(instagram_links4)
-    all_titles4.extend(instagram_titles4)
-
-    all_files1.extend(newsletter_data1)
-    all_links1.extend(newsletter_links1)
-    all_titles1.extend(newsletter_titles1)
-
-    all_files2.extend(newsletter_data2)
-    all_links2.extend(newsletter_links2)
-    all_titles2.extend(newsletter_titles2)
-
-    all_files3.extend(newsletter_data3)
-    all_links3.extend(newsletter_links3)
-    all_titles3.extend(newsletter_titles3)
-
-    all_files4.extend(newsletter_data4)
-    all_links4.extend(newsletter_links4)
-    all_titles4.extend(newsletter_titles4)
-
-    all_files1.extend(youtube_data1)
-    all_links1.extend(youtube_links1)
-    all_titles1.extend(youtube_titles1)
-
-    all_files2.extend(youtube_data2)
-    all_links2.extend(youtube_links2)
-    all_titles2.extend(youtube_titles2)
-
-    all_files3.extend(youtube_data3)
-    all_links3.extend(youtube_links3)
-    all_titles3.extend(youtube_titles3)
-
-    all_files4.extend(youtube_data4)
-    all_links4.extend(youtube_links4)
-    all_titles4.extend(youtube_titles4)
-
-    all_files1.extend(twitter_data1)
-    all_links1.extend(twitter_links1)
-    all_titles1.extend(twitter_titles1)
-
-    all_files2.extend(twitter_data2)
-    all_links2.extend(twitter_links2)
-    all_titles2.extend(twitter_titles2)
-
-    all_files3.extend(twitter_data3)
-    all_links3.extend(twitter_links3)
-    all_titles3.extend(twitter_titles3)
-
-    all_files4.extend(twitter_data4)
-    all_links4.extend(twitter_links4)
-    all_titles4.extend(twitter_titles4)
-
-    all_files1.extend(facebook_data1)
-    all_links1.extend(facebook_links1)
-    all_titles1.extend(facebook_titles1)
-
-    all_files2.extend(facebook_data2)
-    all_links2.extend(facebook_links2)
-    all_titles2.extend(facebook_titles2)
-
-    all_files3.extend(facebook_data3)
-    all_links3.extend(facebook_links3)
-    all_titles3.extend(facebook_titles3)
-
-    all_files4.extend(facebook_data4)
-    all_links4.extend(facebook_links4)
-    all_titles4.extend(facebook_titles4)
+    # Extend summaries for each category
+    all_summaries1.extend(linkedin_summary1); all_summaries2.extend(linkedin_summary2); all_summaries3.extend(linkedin_summary3); all_summaries4.extend(linkedin_summary4)
+    all_summaries1.extend(instagram_summary1); all_summaries2.extend(instagram_summary2); all_summaries3.extend(instagram_summary3); all_summaries4.extend(instagram_summary4)
+    all_summaries1.extend(newsletter_summary1); all_summaries2.extend(newsletter_summary2); all_summaries3.extend(newsletter_summary3); all_summaries4.extend(newsletter_summary4)
+    all_summaries1.extend(youtube_summary1); all_summaries2.extend(youtube_summary2); all_summaries3.extend(youtube_summary3); all_summaries4.extend(youtube_summary4)
+    all_summaries1.extend(twitter_summary1); all_summaries2.extend(twitter_summary2); all_summaries3.extend(twitter_summary3); all_summaries4.extend(twitter_summary4)
+    all_summaries1.extend(facebook_summary1); all_summaries2.extend(facebook_summary2); all_summaries3.extend(facebook_summary3); all_summaries4.extend(facebook_summary4)
 
     # Process and upload for all_files1
     if not all_files1:
@@ -217,7 +113,7 @@ def start_monitoring():
     else:
         if start_notebook_assistant(all_files1):
             print("Monitoring for category 1 completed.")
-            start_google_drive(all_links1, all_titles1, subject="NEW TOOLS")
+            start_google_drive(all_summaries1, subject="NEW TOOLS")
             print("Google Drive upload for category 1 completed.")
 
     # Process and upload for all_files2
@@ -226,7 +122,7 @@ def start_monitoring():
     else:
         if start_notebook_assistant(all_files2):
             print("Monitoring for category 2 completed.")
-            start_google_drive(all_links2, all_titles2, subject="UPDATES AND IMPROVEMENTS")
+            start_google_drive(all_summaries2, subject="UPDATES AND IMPROVEMENTS")
             print("Google Drive upload for category 2 completed.")
 
     # Process and upload for all_files3
@@ -235,7 +131,7 @@ def start_monitoring():
     else:
         if start_notebook_assistant(all_files3):
             print("Monitoring for category 3 completed.")
-            start_google_drive(all_links3, all_titles3, subject="BUSINESS INNOVATIONS")
+            start_google_drive(all_summaries3, subject="BUSINESS INNOVATIONS")
             print("Google Drive upload for category 3 completed.")
 
     # Process and upload for all_files4
@@ -244,7 +140,7 @@ def start_monitoring():
     else:
         if start_notebook_assistant(all_files4):
             print("Monitoring for category 4 completed.")
-            start_google_drive(all_links4, all_titles4, subject="DISCUSSIONS")
+            start_google_drive(all_summaries4, subject="DISCUSSIONS")
             print("Google Drive upload for category 4 completed.")
     print("COMPLETED")
 
@@ -312,13 +208,13 @@ def start_notebook_assistant(processed_data):
     notebook_assistant = NotebookDefault(driver=driver)
     return notebook_assistant.generate_audio_podcast_from_profiles(processed_data)
 
-def start_google_drive(all_links, all_titles, subject):
+def start_google_drive(all_summaries, subject):
     time.sleep(10)  # Wait for the file to be ready
     
-    titles_text = "\n".join(all_titles)
+    summaries_text = "\n".join(all_summaries)
     openai_service = OpenAIService(config=CONFIG)
     instructions = CONFIG["title_prompt"]
-    prompt = f"Content: {titles_text}"
+    prompt = f"{instructions}: Content: {summaries_text}"
     response = openai_service.generate_response(prompt, instructions)
 
     credentials_provider = CredentialsProvider(CONFIG)
@@ -327,11 +223,9 @@ def start_google_drive(all_links, all_titles, subject):
     uploader.authenticate()
     file_metadata = uploader.upload_file(title=response, emails_to_share=CONFIG["emails_to_share"])
 
-    RateLimiter.random_delay()
-    links_text = "\n".join(all_links)
     openai_service = OpenAIService(config=CONFIG)
     instructions = CONFIG["summarize_prompt"]
-    prompt = f"Content: {links_text}"
+    prompt = f"{instructions}: Content: {summaries_text}"
     response = openai_service.generate_response(prompt, instructions)
 
     body_with_links = f"{subject}: Daily podcast update has been uploaded to Google Drive. Link: {file_metadata['webViewLink']}\n\nAdditional Links:\n{response}"

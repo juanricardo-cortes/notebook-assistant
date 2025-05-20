@@ -10,21 +10,11 @@ class SocialMonitor:
         self.config = config
 
     def execute_monitoring(self):
-        processed_data1 = []
-        important_links1 = []
-        generated_titles1 = []
-
-        processed_data2 = []
-        important_links2 = []
-        generated_titles2 = []
-
-        processed_data3 = []
-        important_links3 = []
-        generated_titles3 = []
-
-        processed_data4 = []
-        important_links4 = []
-        generated_titles4 = []
+        # Initialize lists for each category
+        processed_data1, important_links1, generated_titles1, generated_summaries1 = [], [], [], []
+        processed_data2, important_links2, generated_titles2, generated_summaries2 = [], [], [], []
+        processed_data3, important_links3, generated_titles3, generated_summaries3 = [], [], [], []
+        processed_data4, important_links4, generated_titles4, generated_summaries4 = [], [], [], []
 
         for url in self.profile_urls:
             try:
@@ -37,24 +27,25 @@ class SocialMonitor:
                     #data2 = new ai updates and improvements
                     #data3 = new ai business innovations and applications
                     #data4 = new ai discussions and debates
-                    def check_and_process(valuation_key, processed_data, generated_titles, important_links):
+                    def check_and_process(valuation_key, processed_data, generated_titles, important_links, generated_summaries):
                         data_checked = self.scraper.check_content(content=data, config=self.config, valuation=self.config[valuation_key])
                         if len(data_checked) > 0:
                             print(f"Valuation: Content is relevant for {profile_handle}.")
                             filename = self.scraper.save_content(profile_handle, data_checked, self.scraper.output_folder.split('/')[-2])
                             self.upload_to_gcs(data=data_checked, filename = filename, bucket_name="bhtech")  # Replace with your GCS bucket name
                             processed_data.append(f"C:/pinokio/api/notebook-assistant/app/{filename}")
-                            generated_titles.append(self.scraper.generate_title(data_checked, config=self.config))
-                            important_links.append(self.scraper.extract_important_links(data_checked, config=self.config))
+                            # generated_titles.append(self.scraper.generate_title(data_checked, config=self.config))
+                            # important_links.append(self.scraper.extract_important_links(data_checked, config=self.config))
+                            generated_summaries.append(self.scraper.generate_summary(data_checked, config=self.config))
                         else:
                             print(f"Valuation: Content is not relevant for {profile_handle}.")
 
                     with ThreadPoolExecutor(max_workers=4) as executor:
                         futures = [
-                            executor.submit(check_and_process, "new_ai_tools_prompt", processed_data1, generated_titles1, important_links1),
-                            executor.submit(check_and_process, "new_ai_updates_and_improvements_prompt", processed_data2, generated_titles2, important_links2),
-                            executor.submit(check_and_process, "new_ai_business_innovations_and_applications_prompt", processed_data3, generated_titles3, important_links3),
-                            executor.submit(check_and_process, "new_ai_discussions_and_trends_prompt", processed_data4, generated_titles4, important_links4),
+                            executor.submit(check_and_process, "new_ai_tools_prompt", processed_data1, generated_titles1, important_links1, generated_summaries1),
+                            executor.submit(check_and_process, "new_ai_updates_and_improvements_prompt", processed_data2, generated_titles2, important_links2, generated_summaries2),
+                            executor.submit(check_and_process, "new_ai_business_innovations_and_applications_prompt", processed_data3, generated_titles3, important_links3, generated_summaries3),
+                            executor.submit(check_and_process, "new_ai_discussions_and_trends_prompt", processed_data4, generated_titles4, important_links4, generated_summaries4),
                         ]
                         for future in futures:
                             future.result()
@@ -63,10 +54,10 @@ class SocialMonitor:
             except Exception as e:
                 print(f"Error processing {url}: {str(e)}")
 
-        return (processed_data1, important_links1, generated_titles1, 
-                processed_data2, important_links2, generated_titles2, 
-                processed_data3, important_links3, generated_titles3, 
-                processed_data4, important_links4, generated_titles4)
+        return (
+            processed_data1, processed_data2, processed_data3, processed_data4,
+            generated_summaries1, generated_summaries2, generated_summaries3, generated_summaries4
+        )
                 
     def upload_to_gcs(self, data, filename, bucket_name: str):
         from utils.storage_manager import StorageManager

@@ -50,7 +50,55 @@ def start_monitoring():
     #2 new_ai_updates_and_improvements
     #3 new_ai_business_innovations_and_applications
     #4 new_ai_discussions_and_trends
+    import concurrent.futures
 
+    def run_monitor(func):
+        try:
+            return func()
+        except Exception as e:
+            print(f"Error in {func.__name__}: {e}")
+            return tuple([] for _ in range(12))  # 4 categories x (data, links, titles)
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        future_linkedin = executor.submit(run_monitor, monitor_linkedin_profiles)
+        future_instagram = executor.submit(run_monitor, monitor_instagram_profiles)
+        future_newsletter = executor.submit(run_monitor, monitor_newsletters)
+        future_youtube = executor.submit(run_monitor, monitor_youtube_channels)
+        future_twitter = executor.submit(run_monitor, monitor_twitter_profiles)
+        future_facebook = executor.submit(run_monitor, monitor_facebook_groups)
+
+    
+        (linkedin_data1, linkedin_links1, linkedin_titles1, 
+         linkedin_data2, linkedin_links2, linkedin_titles2, 
+         linkedin_data3, linkedin_links3, linkedin_titles3,
+         linkedin_data4, linkedin_links4, linkedin_titles4) = future_linkedin.result()
+
+        (instagram_data1, instagram_links1, instagram_titles1,
+         instagram_data2, instagram_links2, instagram_titles2,
+         instagram_data3, instagram_links3, instagram_titles3,
+         instagram_data4, instagram_links4, instagram_titles4) = future_instagram.result()
+
+        (newsletter_data1, newsletter_links1, newsletter_titles1,
+         newsletter_data2, newsletter_links2, newsletter_titles2,
+         newsletter_data3, newsletter_links3, newsletter_titles3,
+         newsletter_data4, newsletter_links4, newsletter_titles4) = future_newsletter.result()
+
+        (youtube_data1, youtube_links1, youtube_titles1,
+         youtube_data2, youtube_links2, youtube_titles2,
+         youtube_data3, youtube_links3, youtube_titles3,
+         youtube_data4, youtube_links4, youtube_titles4) = future_youtube.result()
+
+        (twitter_data1, twitter_links1, twitter_titles1,
+         twitter_data2, twitter_links2, twitter_titles2,
+         twitter_data3, twitter_links3, twitter_titles3,
+         twitter_data4, twitter_links4, twitter_titles4) = future_twitter.result()
+
+        (facebook_data1, facebook_links1, facebook_titles1,
+         facebook_data2, facebook_links2, facebook_titles2,
+         facebook_data3, facebook_links3, facebook_titles3,
+         facebook_data4, facebook_links4, facebook_titles4) = future_facebook.result()
+        
+    print("FINISHED MONITORING")
     all_files1 = [] 
     all_links1 = []
     all_titles1 = []
@@ -67,10 +115,6 @@ def start_monitoring():
     all_links4 = []
     all_titles4 = []
 
-    (linkedin_data1, linkedin_links1, linkedin_titles1, 
-    linkedin_data2, linkedin_links2, linkedin_titles2, 
-    linkedin_data3, linkedin_links3, linkedin_titles3,
-    linkedin_data4, linkedin_links4, linkedin_titles4) = monitor_linkedin_profiles()
     all_files1.extend(linkedin_data1)
     all_links1.extend(linkedin_links1)
     all_titles1.extend(linkedin_titles1)
@@ -87,10 +131,6 @@ def start_monitoring():
     all_links4.extend(linkedin_links4)
     all_titles4.extend(linkedin_titles4)
 
-    (instagram_data1, instagram_links1, instagram_titles1,
-    instagram_data2, instagram_links2, instagram_titles2,
-    instagram_data3, instagram_links3, instagram_titles3,
-    instagram_data4, instagram_links4, instagram_titles4) = monitor_instagram_profiles()
     all_files1.extend(instagram_data1)
     all_links1.extend(instagram_links1)
     all_titles1.extend(instagram_titles1)
@@ -107,10 +147,6 @@ def start_monitoring():
     all_links4.extend(instagram_links4)
     all_titles4.extend(instagram_titles4)
 
-    (newsletter_data1, newsletter_links1, newsletter_titles1,
-    newsletter_data2, newsletter_links2, newsletter_titles2,
-    newsletter_data3, newsletter_links3, newsletter_titles3,
-    newsletter_data4, newsletter_links4, newsletter_titles4) = monitor_newsletters()
     all_files1.extend(newsletter_data1)
     all_links1.extend(newsletter_links1)
     all_titles1.extend(newsletter_titles1)
@@ -127,10 +163,6 @@ def start_monitoring():
     all_links4.extend(newsletter_links4)
     all_titles4.extend(newsletter_titles4)
 
-    (youtube_data1, youtube_links1, youtube_titles1,
-    youtube_data2, youtube_links2, youtube_titles2,
-    youtube_data3, youtube_links3, youtube_titles3,
-    youtube_data4, youtube_links4, youtube_titles4) = monitor_youtube_channels()
     all_files1.extend(youtube_data1)
     all_links1.extend(youtube_links1)
     all_titles1.extend(youtube_titles1)
@@ -147,10 +179,6 @@ def start_monitoring():
     all_links4.extend(youtube_links4)
     all_titles4.extend(youtube_titles4)
 
-    (twitter_data1, twitter_links1, twitter_titles1,
-    twitter_data2, twitter_links2, twitter_titles2,
-    twitter_data3, twitter_links3, twitter_titles3,
-    twitter_data4, twitter_links4, twitter_titles4) = monitor_twitter_profiles()
     all_files1.extend(twitter_data1)
     all_links1.extend(twitter_links1)
     all_titles1.extend(twitter_titles1)
@@ -167,10 +195,6 @@ def start_monitoring():
     all_links4.extend(twitter_links4)
     all_titles4.extend(twitter_titles4)
 
-    (facebook_data1, facebook_links1, facebook_titles1,
-    facebook_data2, facebook_links2, facebook_titles2,
-    facebook_data3, facebook_links3, facebook_titles3,
-    facebook_data4, facebook_links4, facebook_titles4) = monitor_facebook_groups()
     all_files1.extend(facebook_data1)
     all_links1.extend(facebook_links1)
     all_titles1.extend(facebook_titles1)
@@ -191,37 +215,38 @@ def start_monitoring():
     if not all_files1:
         print("No data to process for category 1. Stopping execution.")
     else:
-        start_notebook_assistant(all_files1)
-        print("Monitoring for category 1 completed.")
-        start_google_drive(all_links1, all_titles1, subject="NEW TOOLS")
-        print("Google Drive upload for category 1 completed.")
+        if start_notebook_assistant(all_files1):
+            print("Monitoring for category 1 completed.")
+            start_google_drive(all_links1, all_titles1, subject="NEW TOOLS")
+            print("Google Drive upload for category 1 completed.")
 
     # Process and upload for all_files2
     if not all_files2:
         print("No data to process for category 2. Stopping execution.")
     else:
-        start_notebook_assistant(all_files2)
-        print("Monitoring for category 2 completed.")
-        start_google_drive(all_links2, all_titles2, subject="UPDATES AND IMPROVEMENTS")
-        print("Google Drive upload for category 2 completed.")
+        if start_notebook_assistant(all_files2):
+            print("Monitoring for category 2 completed.")
+            start_google_drive(all_links2, all_titles2, subject="UPDATES AND IMPROVEMENTS")
+            print("Google Drive upload for category 2 completed.")
 
     # Process and upload for all_files3
     if not all_files3:
         print("No data to process for category 3. Stopping execution.")
     else:
-        start_notebook_assistant(all_files3)
-        print("Monitoring for category 3 completed.")
-        start_google_drive(all_links3, all_titles3, subject="BUSINESS INNOVATIONS")
-        print("Google Drive upload for category 3 completed.")
+        if start_notebook_assistant(all_files3):
+            print("Monitoring for category 3 completed.")
+            start_google_drive(all_links3, all_titles3, subject="BUSINESS INNOVATIONS")
+            print("Google Drive upload for category 3 completed.")
 
     # Process and upload for all_files4
     if not all_files4:
         print("No data to process for category 4. Stopping execution.")
     else:
-        start_notebook_assistant(all_files4)
-        print("Monitoring for category 4 completed.")
-        start_google_drive(all_links4, all_titles4, subject="DISCUSSIONS")
-        print("Google Drive upload for category 4 completed.")
+        if start_notebook_assistant(all_files4):
+            print("Monitoring for category 4 completed.")
+            start_google_drive(all_links4, all_titles4, subject="DISCUSSIONS")
+            print("Google Drive upload for category 4 completed.")
+    print("COMPLETED")
 
     
 
@@ -287,7 +312,7 @@ def start_email_provider():
 def start_notebook_assistant(processed_data):
     driver = AntiDetectDriver().get_driver()
     notebook_assistant = NotebookDefault(driver=driver)
-    notebook_assistant.generate_audio_podcast_from_profiles(processed_data)
+    return notebook_assistant.generate_audio_podcast_from_profiles(processed_data)
 
 def start_google_drive(all_links, all_titles, subject):
     time.sleep(10)  # Wait for the file to be ready

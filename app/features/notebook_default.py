@@ -28,14 +28,19 @@ class NotebookDefault:
                         print("Successfully generated the audio podcast.")
                         if self.helper.download_file():
                             print("Successfully downloaded the audio podcast.")
+                            return True
                         else:
                             print("Failed to download the audio podcast.")
+                            return False
                 else:
                     print("Failed to generate the audio podcast.")
+                    return False
             else:
                 print("Failed to click the input button.")
+                return False
         else:
             print("Failed to click to create a new notebook.")
+            return False
 
 
     def generate_one_youtube_video_podcast(self, args):

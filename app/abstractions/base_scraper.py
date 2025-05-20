@@ -19,7 +19,6 @@ class SocialScraper(ABC):
 
     def save_content(self, profile_handle: str, content: list, platform: str):
         """Save scraped content to JSON file using YouTube-style naming convention"""
-        RateLimiter.random_delay()
         safe_handle = re.sub(r'[^\w\-_. ]', '_', profile_handle)
         date_str = datetime.date.today().strftime("%Y%m%d")
         random_str = ''.join([chr(i) for i in os.urandom(6)]).encode('utf-8').hex()[:6]
@@ -33,34 +32,37 @@ class SocialScraper(ABC):
 
     def check_content(self, content: list, config, valuation) -> list:
         """Check if the content is empty or not."""
+        print("CHECK CONTENT")
         openai_service = OpenAIService(config=config)    
         instructions = valuation
         new_content = []
         for content_item in content:
-            RateLimiter.random_delay()
-            prompt = f"Content: {content_item}"
+            RateLimiter.random_delay(10,15)
+            prompt = f"{valuation}: Content: {content_item}"
             response = openai_service.generate_response(prompt, instructions)
             print(f"Response from OpenAI: {response}")
             if "true" in response.lower():
                 new_content.append(content_item)
+            else:
+                print("removed")
         return new_content
         
     def extract_important_links(self, content: list, config) -> str:
         """Extract important links from the content."""
-        RateLimiter.random_delay()
+        RateLimiter.random_delay(10,15)
         openai_service = OpenAIService(config=config)
         instructions = config["extract_links_prompt"]
-        prompt = f"Content: {content}"
+        prompt = f"{instructions}: Content: {content}"
         response = openai_service.generate_response(prompt, instructions)
         print(f"Response from OpenAI: {response}")
         return response
     
     def generate_title(self, data, config) -> str:
         """Get summary of the content."""
-        RateLimiter.random_delay()
+        RateLimiter.random_delay(10,15)
         openai_service = OpenAIService(config=config)
         instructions = config["title_prompt"]
-        prompt = f"Content: {data}"
+        prompt = f"{instructions}: Content: {data}"
         response = openai_service.generate_response(prompt, instructions)
         print(f"Response from OpenAI: {response}")
         return response

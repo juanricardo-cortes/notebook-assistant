@@ -140,8 +140,6 @@ class NewsletterService(SocialScraper):
 
         # Print the headers and links
         print(f"Found {len(headers_and_links)} headers and links:")
-        for item in headers_and_links:
-            print(f"Header: {item['header']}, Link: {item['link']}")
 
         # Scrape text from the links
         links = [item['link'] for item in headers_and_links]
@@ -168,7 +166,6 @@ class NewsletterService(SocialScraper):
 
         new_headers_and_links = []
         for info in headers_and_links:
-            RateLimiter.random_delay()
             print("Check if info text has yesterday's date")
             if not info.get('text'):
                 print(f"No text found for {info['header']}. Skipping...")

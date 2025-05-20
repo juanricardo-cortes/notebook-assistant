@@ -38,8 +38,8 @@ def main(args=None):
         # start_proxy_rotation()        
         # start_email_provider()
 
-        # test()
-        start_monitoring()
+        test()
+        # start_monitoring()
         # start_bigquery()
     
     return
@@ -248,8 +248,6 @@ def start_monitoring():
             print("Google Drive upload for category 4 completed.")
     print("COMPLETED")
 
-    
-
 def monitor_newsletters():
     newsletter_scraper = NewsletterService(config=CONFIG)
     newsletter_urls = CONFIG["newsletter_urls"]
@@ -358,20 +356,17 @@ def test():
     print("Testing...")
 
     import requests
-
-    mapurl = "https://www.google.com/maps/place/SM+City+Marikina/@14.626017,121.0812158,17z/data=!3m1!4b1!4m6!3m5!1s0x3397b8261d0f20b5:0x45e3362dac0fc52a!8m2!3d14.6260118!4d121.0837907!16s%2Fm%2F043ln0g?entry=ttu&g_ep=EgoyMDI1MDUxMy4xIKXMDSoASAFQAw%3D%3D"
-
     url = "https://api.brightdata.com/datasets/v3/trigger"
     headers = {
         "Authorization": f"Bearer {CONFIG['brightdata_key']}",
         "Content-Type": "application/json",
     }
     params = {
-        "dataset_id": "gd_luzfs1dn2oa0teb81",
+        "dataset_id": "gd_m7dhdot1vw9a7gc1n",
         "include_errors": "true",
     }
     data = [
-        {"url":f"{mapurl}","days_limit":18}
+        {"url":"https://www.perplexity.ai","prompt":"latest news on AI","country":"US"},
     ]
 
     response = requests.post(url, headers=headers, params=params, json=data)

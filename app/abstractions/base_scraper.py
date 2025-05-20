@@ -66,3 +66,14 @@ class SocialScraper(ABC):
         response = openai_service.generate_response(prompt, instructions)
         print(f"Response from OpenAI: {response}")
         return response
+    
+    def generate_summary(self, data, config) -> str:
+        """Get summary of the content"""
+        RateLimiter.random_delay(10,15)
+        openai_service = OpenAIService(config=config)
+        instructions = config["summarize_prompt"]
+        prompt = f"{instructions}: Content: {data}"
+        response = openai_service.generate_response(prompt, instructions)
+        print(f"Response from OpenAI: {response}")
+        return response
+    

@@ -304,7 +304,7 @@ def start_google_drive(all_links, all_titles, subject):
     uploader.authenticate()
     file_metadata = uploader.upload_file(title=response, emails_to_share=CONFIG["emails_to_share"])
 
-    RateLimiter.random_delay(5,10)
+    RateLimiter.random_delay()
     links_text = "\n".join(all_links)
     openai_service = OpenAIService(config=CONFIG)
     instructions = CONFIG["summarize_prompt"]

@@ -53,7 +53,7 @@ class NewsletterService(SocialScraper):
         headers = {
             'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
         }
-        RateLimiter.random_delay(10,20)
+        RateLimiter.random_delay()
         # Fetch the website content
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
@@ -168,7 +168,7 @@ class NewsletterService(SocialScraper):
 
         new_headers_and_links = []
         for info in headers_and_links:
-            RateLimiter.random_delay(5,10)
+            RateLimiter.random_delay()
             print("Check if info text has yesterday's date")
             if not info.get('text'):
                 print(f"No text found for {info['header']}. Skipping...")

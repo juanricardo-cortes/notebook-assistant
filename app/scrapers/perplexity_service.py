@@ -3,27 +3,24 @@ import time
 from abstractions.base_scraper import SocialScraper
 import requests
 
-class FacebookService(SocialScraper):
-    def __init__(self, output_folder='output/facebook', config=None):
+class PerplexityService(SocialScraper):
+    def __init__(self, output_folder='output/perplexity', config=None):
         super().__init__(output_folder)
         self.config = config
+        print("Starting PerplexityService")
 
-    def scrape_profile(self, group_url: str) -> list:
-
+    def scrape_profile(self, prompt: str) -> list:
         url = "https://api.brightdata.com/datasets/v3/trigger"
         headers = {
             "Authorization": f"Bearer {self.config['brightdata_key']}",
             "Content-Type": "application/json",
         }
         params = {
-            "dataset_id": "gd_lz11l67o2cb3r0lkj3",
+            "dataset_id": "gd_m7dhdot1vw9a7gc1n",
             "include_errors": "true",
         }
-        yesterday = datetime.utcnow() - timedelta(days=1)
-        start_of_yesterday = yesterday.replace(hour=0, minute=0, second=0, microsecond=0)
-        end_of_yesterday = yesterday.replace(hour=23, minute=59, second=0, microsecond=0)
         data = [
-            {"url":f"{group_url}","start_date":f"{start_of_yesterday}","end_date":f"{end_of_yesterday}"},
+            {"url":"https://www.perplexity.ai","prompt": f"{prompt}","country":"US"},
         ]
 
         response = requests.post(url, headers=headers, params=params, json=data)
@@ -47,11 +44,9 @@ class FacebookService(SocialScraper):
             print('Checking status...')
             print('Response:', response)
             if response.status_code == 202:
-                print('Response:', response.json())
                 time.sleep(30)
                 continue
             elif response.status_code == 200:
-                print('Response:', response.json())
                 returnresponse = response.json()
                 break
             else:

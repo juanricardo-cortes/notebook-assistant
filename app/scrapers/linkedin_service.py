@@ -31,7 +31,6 @@ class LinkedInScraper(SocialScraper):
         ]
 
         response = requests.post(url, headers=headers, params=params, json=data)
-        print(response.json())
 
         SNAPSHOT_ID = response.json().get('snapshot_id')
         print('Snapshot ID:', SNAPSHOT_ID)

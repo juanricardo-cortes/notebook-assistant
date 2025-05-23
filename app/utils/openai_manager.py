@@ -31,16 +31,22 @@ class OpenAIService:
         print(f"Generated response: {response.output_text}")
         return response.output_text
 
-        # client = genai.Client(api_key=self.config["gemini_api_key"])
+    def generate_gemini_response(self, prompt, instructions):
+        """
+        Generate a response using Gemini's 2.5 pro preview model.
 
-        # response = client.models.generate_content(
-        #     model="gemini-2.5-pro-preview-05-06",
-        #     contents=f"{instructions} CONTENT: {prompt}",
-        # )
+        :param prompt: The input prompt for the model.
+        :return: The generated response text.
+        """
+        client = genai.Client(api_key=self.config["gemini_api_key"])
 
-        # print(f"Generated response: {response.text}")
-        # return response.text
+        response = client.models.generate_content(
+            model="gemini-2.5-pro-preview-05-06",
+            contents=f"{instructions} CONTENT: {prompt}",
+        )
 
+        print(f"Generated response: {response.text}")
+        return response.text
 
     def generate_web_search_response(self, prompt):
         """
